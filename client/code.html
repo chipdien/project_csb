@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VietElite Weekly Teaching Schedule</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Manrope & Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#ed77bd",
+                        "on-surface": "#191d15",
+                        "outline": "#717a69",
+                        "on-secondary-container": "#4f6a3e",
+                        "background": "#f7fbee",
+                        "tertiary-fixed": "#ffd8ea",
+                        "on-primary-fixed": "#082100",
+                        "on-secondary-fixed": "#092100",
+                        "surface-variant": "#e0e4d7",
+                        "surface-container": "#ecefe2",
+                        "surface-bright": "#f7fbee",
+                        "primary-fixed": "#acf680",
+                        "surface": "#f7fbee",
+                        "surface-dim": "#d8dccf",
+                        "outline-variant": "#c1c9b6",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#344e24",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#801b5f",
+                        "surface-container-highest": "#e0e4d7",
+                        "secondary": "#4b663a",
+                        "inverse-surface": "#2d3229",
+                        "surface-container-low": "#f1f5e8",
+                        "secondary-container": "#c9e9b2",
+                        "tertiary-fixed-dim": "#ffaed9",
+                        "on-tertiary-fixed": "#3c002a",
+                        "inverse-primary": "#91d968",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#6b034e",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#41493a",
+                        "secondary-fixed": "#ccecb4",
+                        "secondary-fixed-dim": "#b0d09a",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "tertiary": "#9e3679",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#173f00",
+                        "primary-fixed-dim": "#91d968",
+                        "on-primary-fixed-variant": "#1f5100",
+                        "primary-container": "#6cb145",
+                        "primary": "#2c6c00",
+                        "surface-tint": "#2c6c00",
+                        "on-background": "#191d15",
+                        "surface-container-high": "#e6eadd",
+                        "inverse-on-surface": "#eef2e5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="text-on-surface antialiased overflow-x-hidden bg-white">
+<!-- SideNavBar (As defined in JSON) -->
+<aside class="w-[240px] h-screen fixed left-0 top-0 bg-[#ecefe2] dark:bg-slate-900 flex flex-col h-full py-6 px-4 z-50">
+<div class="mb-10 px-4">
+<h1 class="text-2xl font-bold text-[#2c6c00] dark:text-[#6cb145] tracking-tight" style="">VietElite</h1>
+<p class="text-[10px] uppercase tracking-widest text-[#191d15]/50 dark:text-slate-500 font-bold mt-1" style="">Weekly Teaching</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center space-x-3 bg-[#6cb145] text-white rounded-full px-4 py-2 transition-all font-manrope text-sm font-medium tracking-tight" href="#" style="">
+<span class="material-symbols-outlined" data-icon="dashboard" style="">dashboard</span>
+<span class="" style="">Dashboard</span>
+</a>
+<a class="flex items-center space-x-3 text-[#191d15] dark:text-slate-300 px-4 py-2 hover:bg-[#f7fbee]/50 dark:hover:bg-slate-800 transition-colors font-manrope text-sm font-medium tracking-tight" href="#" style="">
+<span class="material-symbols-outlined" data-icon="calendar_month" style="">calendar_month</span>
+<span class="" style="">Schedule</span>
+</a>
+<a class="flex items-center space-x-3 text-[#191d15] dark:text-slate-300 px-4 py-2 hover:bg-[#f7fbee]/50 dark:hover:bg-slate-800 transition-colors font-manrope text-sm font-medium tracking-tight" href="#" style="">
+<span class="material-symbols-outlined" data-icon="menu_book" style="">menu_book</span>
+<span class="" style="">Courses</span>
+</a>
+<a class="flex items-center space-x-3 text-[#191d15] dark:text-slate-300 px-4 py-2 hover:bg-[#f7fbee]/50 dark:hover:bg-slate-800 transition-colors font-manrope text-sm font-medium tracking-tight" href="#" style="">
+<span class="material-symbols-outlined" data-icon="group" style="">group</span>
+<span class="" style="">Faculty</span>
+</a>
+<a class="flex items-center space-x-3 text-[#191d15] dark:text-slate-300 px-4 py-2 hover:bg-[#f7fbee]/50 dark:hover:bg-slate-800 transition-colors font-manrope text-sm font-medium tracking-tight" href="#" style="">
+<span class="material-symbols-outlined" data-icon="settings" style="">settings</span>
+<span class="" style="">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-4">
+<button class="w-full py-3 px-4 bg-gradient-to-br from-primary to-primary-container text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2" style="">
+<span class="material-symbols-outlined text-sm" data-icon="add" style="">add</span>
+                Add Session
+            </button>
+</div>
+</aside>
+<!-- TopNavBar (As defined in JSON) -->
+<header class="fixed top-0 right-0 w-[calc(100%-240px)] z-40 flex justify-between items-center h-16 px-8 ml-[240px] dark:bg-slate-950/80 backdrop-blur-xl shadow-sm dark:shadow-none bg-white/80">
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="search" style="">search</span>
+<input class="bg-surface-container-lowest border-none rounded-full py-2 pl-10 pr-4 w-64 text-sm focus:ring-2 ring-[#6cb145] placeholder-outline-variant font-medium" placeholder="Mã lớp, tên giáo viên..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-[#191d15] hover:text-[#6cb145] transition-all" style="">
+<span class="material-symbols-outlined" data-icon="calendar_today" style="">calendar_today</span>
+</button>
+<button class="p-2 text-[#191d15] hover:text-[#6cb145] transition-all relative" style="">
+<span class="material-symbols-outlined" data-icon="notifications" style="">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant/30 mx-2"></div>
+<div class="flex items-center gap-3">
+<span class="text-sm font-manrope font-semibold text-[#191d15]" style="">Cao Ngọc Giáp<br/>               ADMIN</span>
+<div class="w-8 h-8 rounded-full bg-primary-fixed overflow-hidden">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="professional portrait of a senior professor in a library setting, warm intellectual lighting, soft focus background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSjSBRxcXYOzj-St8ygpEGd81mxUVw5BpA5Qbc0SvdHLejFODISSGPKTVz4k709rbicFALAj16LZztIAAqk7i5jpHapm0WF4HA9hrr6HlSvBzCmsig2tXYlm5qTuRCjeAavAXoZXrUKn_yWAskjHjM7KPA8Au5hKMI5UA4CTSrsb0SM7jGITV4tBUhIX0KSPWDnFenX_zBcp54FWKcH9LdqPIpQLE6uOnW9ioQ1JuLtW5rpphuVtbgippyAP_-lrFxhyzkeOu5ZtM" style=""/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Wrapper -->
+<main class="ml-[240px] mt-16 p-8 min-h-screen">
+<!-- Header & Date Range -->
+<div class="mb-8 flex justify-between items-end">
+<div>
+<h2 class="text-3xl font-extrabold tracking-tight text-on-surface" style="">Quản lý ca dạy giáo viên</h2>
+<p class="text-outline font-medium mt-1" style="">Oct 21 – Oct 27, 2024 • Academic Term 1</p>
+</div>
+<div class="flex gap-2 bg-surface-container-low p-1 rounded-full">
+<button class="px-4 py-1.5 rounded-full bg-white text-xs font-bold text-primary shadow-sm" style="">Tuần</button>
+<button class="px-4 py-1.5 rounded-full text-xs font-bold text-outline hover:text-primary transition-colors" style="">Tháng</button>
+<button class="px-4 py-1.5 rounded-full text-xs font-bold text-outline hover:text-primary transition-colors" style="">Ngày</button>
+</div>
+</div>
+<!-- 1. Stats Row -->
+<div class="grid grid-cols-4 gap-6 mb-8 bg-white">
+<!-- Total Classes -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-l-4 border-primary">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-primary-fixed-dim/20 rounded-lg">
+<span class="material-symbols-outlined text-primary" data-icon="school" style="">school</span>
+</span>
+<span class="text-[10px] font-bold text-outline tracking-wider uppercase" style="">MTD +12%</span>
+</div>
+<h3 class="text-2xl font-black text-on-surface" style="">10/100</h3>
+<p class="text-xs font-medium text-outline-variant uppercase tracking-widest mt-1" style="">tổng lớp học</p>
+</div>
+<!-- Total Hours -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-l-4 border-secondary">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-secondary-fixed/20 rounded-lg">
+<span class="material-symbols-outlined text-secondary" data-icon="schedule" style="">schedule</span>
+</span>
+<span class="text-[10px] font-bold text-outline tracking-wider uppercase" style="">Active</span>
+</div>
+<h3 class="text-2xl font-black text-on-surface" style="">320.5</h3>
+<p class="text-xs font-medium text-outline-variant uppercase tracking-widest mt-1" style="">Tổng thời gian giảng dạy</p>
+</div>
+<!-- Teachers Active -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-l-4 border-tertiary">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-tertiary-fixed/20 rounded-lg">
+<span class="material-symbols-outlined text-tertiary" data-icon="person_search" style="">person_search</span>
+</span>
+<span class="text-[10px] font-bold text-outline tracking-wider uppercase" style="">98% Capacity</span>
+</div>
+<h3 class="text-2xl font-black text-on-surface" style="">42</h3>
+<p class="text-xs font-medium text-outline-variant uppercase tracking-widest mt-1" style="">giáo viên tham gia</p>
+</div>
+<!-- Classrooms Used -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-l-4 border-on-surface">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-surface-variant/40 rounded-lg">
+<span class="material-symbols-outlined text-on-surface" data-icon="meeting_room" style="">meeting_room</span>
+</span>
+<span class="text-[10px] font-bold text-outline tracking-wider uppercase" style="">Peak Load</span>
+</div>
+<h3 class="text-2xl font-black text-on-surface" style="">18/20</h3>
+<p class="text-xs font-medium text-outline-variant uppercase tracking-widest mt-1" style="">lớp học được sử dụng </p>
+</div>
+</div>
+<!-- 2. Weekly Grid -->
+<div class="rounded-2xl overflow-hidden shadow-sm">
+<!-- Grid Header -->
+<div class="grid grid-cols-[120px_repeat(7,1fr)] border-b border-outline-variant/10 bg-slate-50">
+<div class="p-4 flex items-center justify-center bg-white">
+<span class="text-[11px] font-black uppercase tracking-[0.1em] text-outline" style="">Level</span>
+</div>
+<div class="p-4 text-center group">
+<div class="flex items-center justify-between">
+<div class="flex-1">
+<span class="block text-[11px] font-bold text-primary uppercase tracking-wider" style="">Monday</span>
+<span class="text-lg font-black text-on-surface" style="">21</span>
+</div>
+<button class="p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white rounded-md" style="">
+<span class="material-symbols-outlined text-sm" data-icon="unfold_more" style="">unfold_more</span>
+</button>
+</div>
+</div>
+<!-- Repeat for other days -->
+<div class="p-4 text-center group border-l border-outline-variant/10">
+<div class="flex items-center justify-between">
+<div class="flex-1">
+<span class="block text-[11px] font-bold text-primary uppercase tracking-wider" style="">Tuesday</span>
+<span class="text-lg font-black text-on-surface" style="">22</span>
+</div>
+<button class="p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white rounded-md" style="">
+<span class="material-symbols-outlined text-sm" data-icon="unfold_more" style="">unfold_more</span>
+</button>
+</div>
+</div>
+<div class="p-4 text-center group border-l border-outline-variant/10">
+<div class="flex items-center justify-between">
+<div class="flex-1">
+<span class="block text-[11px] font-bold text-primary uppercase tracking-wider" style="">Wednesday</span>
+<span class="text-lg font-black text-on-surface" style="">23</span>
+</div>
+<button class="p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white rounded-md" style="">
+<span class="material-symbols-outlined text-sm" data-icon="unfold_more" style="">unfold_more</span>
+</button>
+</div>
+</div>
+<div class="p-4 text-center group border-l border-outline-variant/10">
+<div class="flex items-center justify-between">
+<div class="flex-1">
+<span class="block text-[11px] font-bold text-primary uppercase tracking-wider" style="">Thursday</span>
+<span class="text-lg font-black text-on-surface" style="">24</span>
+</div>
+<button class="p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white rounded-md" style="">
+<span class="material-symbols-outlined text-sm" data-icon="unfold_more" style="">unfold_more</span>
+</button>
+</div>
+</div>
+<div class="p-4 text-center group border-l border-outline-variant/10">
+<div class="flex items-center justify-between">
+<div class="flex-1">
+<span class="block text-[11px] font-bold text-primary uppercase tracking-wider" style="">Friday</span>
+<span class="text-lg font-black text-on-surface" style="">25</span>
+</div>
+<button class="p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white rounded-md" style="">
+<span class="material-symbols-outlined text-sm" data-icon="unfold_more" style="">unfold_more</span>
+</button>
+</div>
+</div>
+<div class="p-4 text-center group border-l border-outline-variant/10 bg-slate-50/50">
+<div class="flex items-center justify-between">
+<div class="flex-1">
+<span class="block text-[11px] font-bold text-secondary uppercase tracking-wider" style="">Saturday</span>
+<span class="text-lg font-black text-on-surface" style="">26</span>
+</div>
+<button class="p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white rounded-md" style="">
+<span class="material-symbols-outlined text-sm" data-icon="unfold_more" style="">unfold_more</span>
+</button>
+</div>
+</div>
+<div class="p-4 text-center group border-l border-outline-variant/10 bg-slate-50/50">
+<div class="flex items-center justify-between">
+<div class="flex-1">
+<span class="block text-[11px] font-bold text-secondary uppercase tracking-wider" style="">Sunday</span>
+<span class="text-lg font-black text-on-surface" style="">27</span>
+</div>
+<button class="p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white rounded-md" style="">
+<span class="material-symbols-outlined text-sm" data-icon="unfold_more" style="">unfold_more</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Grid Rows (Grade Levels) -->
+<div class="divide-y divide-outline-variant/10">
+<!-- Grade 10 Row -->
+<div class="grid grid-cols-[120px_repeat(7,1fr)] min-h-[140px] bg-slate-50">
+<div class="p-4 flex flex-col items-center justify-center border-r border-outline-variant/10 bg-white">
+<span class="text-xl font-extrabold text-on-surface" style="">GR. 10</span>
+<span class="text-[9px] font-bold text-outline bg-surface-container-highest px-2 py-0.5 rounded-full mt-2" style="">MATHEMATICS</span>
+</div>
+<!-- Monday -->
+<div class="p-2 space-y-1 transition-colors bg-white">
+<div class="bg-white p-2 rounded shadow-sm border-l-2 border-primary group">
+<p class="text-[10px] font-bold text-on-surface leading-tight" style="">Advanced Calc I</p>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[9px] text-outline flex items-center gap-0.5" style=""><span class="material-symbols-outlined text-[10px]" data-icon="timer" style="">timer</span>8h-10h</span>
+<span class="text-[9px] text-primary font-bold" style="">R. 402</span>
+</div>
+</div>
+<div class="bg-white p-2 rounded shadow-sm border-l-2 border-secondary/40">
+<p class="text-[10px] font-bold text-on-surface leading-tight" style="">Linear Algebra</p>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[9px] text-outline flex items-center gap-0.5" style=""><span class="material-symbols-outlined text-[10px]" data-icon="timer" style="">timer</span>14h30 - 16h30</span>
+<span class="text-[9px] text-secondary font-bold" style="">R. 102</span>
+</div>
+</div>
+</div>
+<!-- Tuesday -->
+<div class="p-2 space-y-1 border-l border-outline-variant/10 transition-colors bg-white">
+<div class="bg-white p-2 rounded shadow-sm border-l-2 border-primary">
+<p class="text-[10px] font-bold text-on-surface leading-tight" style="">Advanced Calc I</p>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[9px] text-outline flex items-center gap-0.5" style=""><span class="material-symbols-outlined text-[10px]" data-icon="timer" style="">timer</span>8h - 10h</span>
+<span class="text-[9px] text-primary font-bold" style="">R. 402</span>
+</div>
+</div>
+</div>
+<!-- Wednesday -->
+<div class="p-2 space-y-1 border-l border-outline-variant/10 transition-colors bg-white">
+<div class="bg-tertiary-container/10 p-2 rounded shadow-sm border-l-2 border-tertiary">
+<p class="text-[10px] font-bold text-on-tertiary-container leading-tight" style="">Mock Exam A</p>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[9px] text-on-tertiary-container/70 flex items-center gap-0.5" style=""><span class="material-symbols-outlined text-[10px]" data-icon="event_note" style="">event_note</span>9h - 11h</span>
+<span class="text-[9px] text-tertiary font-bold uppercase" style="">Hall 2</span>
+</div>
+</div>
+</div>
+<!-- Thursday -->
+<div class="p-2 space-y-1 border-l border-outline-variant/10 transition-colors bg-white">
+<div class="bg-white p-2 rounded shadow-sm border-l-2 border-primary">
+<p class="text-[10px] font-bold text-on-surface leading-tight" style="">Geometry III</p>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[9px] text-outline flex items-center gap-0.5" style=""><span class="material-symbols-outlined text-[10px]" data-icon="timer" style="">timer</span>10h - 12h</span>
+<span class="text-[9px] text-primary font-bold" style="">R. 405</span>
+</div>
+</div>
+</div>
+<!-- Friday -->
+<div class="p-2 space-y-1 border-l border-outline-variant/10 transition-colors bg-white">
+<div class="bg-white p-2 rounded shadow-sm border-l-2 border-primary">
+<p class="text-[10px] font-bold text-on-surface leading-tight" style="">Advanced Calc I</p>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[9px] text-outline flex items-center gap-0.5" style=""><span class="material-symbols-outlined text-[10px]" data-icon="timer" style="">timer</span>8h - 10h</span>
+<span class="text-[9px] text-primary font-bold" style="">R. 402</span>
+</div>
+</div>
+</div>
+<!-- Saturday -->
+<div class="p-2 space-y-1 border-l border-outline-variant/10 hover:bg-secondary-container/10 transition-colors bg-white bg-slate-50/50">
+<div class="bg-white p-2 rounded shadow-sm border-l-2 border-secondary">
+<p class="text-[10px] font-bold text-on-surface leading-tight" style="">Seminar: logic</p>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[9px] text-outline flex items-center gap-0.5" style=""><span class="material-symbols-outlined text-[10px]" data-icon="timer" style="">timer</span>9h - 11h</span>
+<span class="text-[9px] text-secondary font-bold" style="">Zoom</span>
+</div>
+</div>
+</div>
+<!-- Sunday -->
+<div class="p-2 space-y-1 border-l border-outline-variant/10 hover:bg-secondary-container/10 transition-colors bg-white bg-slate-50/50">
+<div class="flex items-center justify-center h-full">
+<span class="text-[9px] font-bold text-outline-variant uppercase" style="">No Session</span>
+</div>
+</div>
+</div>
+<!-- Grade 11 Row -->
+<div class="grid grid-cols-[120px_repeat(7,1fr)] min-h-[140px] bg-slate-50">
+<div class="p-4 flex flex-col items-center justify-center border-r border-outline-variant/10 bg-white">
+<span class="text-xl font-extrabold text-on-surface" style="">GR. 11</span>
+<span class="text-[9px] font-bold text-outline bg-surface-container-highest px-2 py-0.5 rounded-full mt-2" style="">PHYSICS</span>
+</div>
+<!-- Monday -->
+<div class="p-2 space-y-1 bg-white">
+<div class="bg-white p-2 rounded shadow-sm border-l-2 border-primary">
+<p class="text-[10px] font-bold text-on-surface leading-tight" style="">Quantum Mechanics</p>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[9px] text-outline flex items-center gap-0.5" style=""><span class="material-symbols-outlined text-[10px]" data-icon="timer" style="">timer</span>13h - 15h</span>
+<span class="text-[9px] text-primary font-bold" style="">Lab 4</span>
+</div>
+</div>
+</div>
+<!-- Tuesday -->
+<div class="p-2 border-l border-outline-variant/10 bg-white">
+<div class="bg-white p-2 rounded shadow-sm border-l-2 border-primary">
+<p class="text-[10px] font-bold text-on-surface leading-tight" style="">Quantum Mechanics</p>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[9px] text-outline flex items-center gap-0.5" style=""><span class="material-symbols-outlined text-[10px]" data-icon="timer" style="">timer</span>13h - 15h</span>
+<span class="text-[9px] text-primary font-bold" style="">Lab 4</span>
+</div>
+</div>
+</div>
+<!-- Wednesday -->
+<div class="p-2 border-l border-outline-variant/10 bg-white">
+<div class="bg-white p-2 rounded shadow-sm border-l-2 border-secondary">
+<p class="text-[10px] font-bold text-on-surface leading-tight" style="">Thermodynamics</p>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[9px] text-outline flex items-center gap-0.5" style=""><span class="material-symbols-outlined text-[10px]" data-icon="timer" style="">timer</span>15h45 - 17h45</span>
+<span class="text-[9px] text-secondary font-bold" style="">R. 201</span>
+</div>
+</div>
+</div>
+<!-- Thursday -->
+<div class="p-2 border-l border-outline-variant/10 bg-white">
+<div class="bg-white p-2 rounded shadow-sm border-l-2 border-primary">
+<p class="text-[10px] font-bold text-on-surface leading-tight" style="">Optics &amp; Wave</p>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[9px] text-outline flex items-center gap-0.5" style=""><span class="material-symbols-outlined text-[10px]" data-icon="timer" style="">timer</span>8h - 10h</span>
+<span class="text-[9px] text-primary font-bold" style="">Lab 1</span>
+</div>
+</div>
+</div>
+<!-- Friday -->
+<div class="p-2 border-l border-outline-variant/10 bg-white">
+<div class="bg-white p-2 rounded shadow-sm border-l-2 border-primary">
+<p class="text-[10px] font-bold text-on-surface leading-tight" style="">Quantum Mechanics</p>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[9px] text-outline flex items-center gap-0.5" style=""><span class="material-symbols-outlined text-[10px]" data-icon="timer" style="">timer</span>13h - 15h</span>
+<span class="text-[9px] text-primary font-bold" style="">Lab 4</span>
+</div>
+</div>
+</div>
+<!-- Saturday -->
+<div class="p-2 border-l border-outline-variant/10 bg-white bg-slate-50/50">
+<div class="bg-white p-2 rounded shadow-sm border-l-2 border-tertiary">
+<p class="text-[10px] font-bold text-on-surface leading-tight" style="">Guest Lecture</p>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[9px] text-outline flex items-center gap-0.5" style=""><span class="material-symbols-outlined text-[10px]" data-icon="timer" style="">timer</span>9h - 11h</span>
+<span class="text-[9px] text-tertiary font-bold" style="">Auditorium</span>
+</div>
+</div>
+</div>
+<!-- Sunday -->
+<div class="p-2 border-l border-outline-variant/10 bg-white bg-slate-50/50"></div>
+</div>
+<!-- Grade 12 Row -->
+<div class="grid grid-cols-[120px_repeat(7,1fr)] min-h-[140px] bg-slate-50">
+<div class="p-4 flex flex-col items-center justify-center border-r border-outline-variant/10 bg-white">
+<span class="text-xl font-extrabold text-on-surface" style="">GR. 12</span>
+<span class="text-[9px] font-bold text-outline bg-surface-container-highest px-2 py-0.5 rounded-full mt-2" style="">CHEMISTRY</span>
+</div>
+<!-- Mon -->
+<div class="p-2 border-l border-outline-variant/10 bg-white">
+<div class="bg-white p-2 rounded shadow-sm border-l-2 border-primary">
+<p class="text-[10px] font-bold text-on-surface leading-tight" style="">Organic Synthesis</p>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[9px] text-outline flex items-center gap-0.5" style=""><span class="material-symbols-outlined text-[10px]" data-icon="timer" style="">timer</span>9h - 11h</span>
+<span class="text-[9px] text-primary font-bold" style="">Lab 5</span>
+</div>
+</div>
+</div>
+<!-- Tue -->
+<div class="p-2 border-l border-outline-variant/10 bg-white"></div>
+<!-- Wed -->
+<div class="p-2 border-l border-outline-variant/10 bg-white">
+<div class="bg-white p-2 rounded shadow-sm border-l-2 border-primary">
+<p class="text-[10px] font-bold text-on-surface leading-tight" style="">Inorganic Base</p>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[9px] text-outline flex items-center gap-0.5" style=""><span class="material-symbols-outlined text-[10px]" data-icon="timer" style="">timer</span>9h - 11h</span>
+<span class="text-[9px] text-primary font-bold" style="">R. 303</span>
+</div>
+</div>
+</div>
+<!-- Thu -->
+<div class="p-2 border-l border-outline-variant/10 bg-white"></div>
+<!-- Fri -->
+<div class="p-2 border-l border-outline-variant/10 bg-white">
+<div class="bg-white p-2 rounded shadow-sm border-l-2 border-primary">
+<p class="text-[10px] font-bold text-on-surface leading-tight" style="">Organic Synthesis</p>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[9px] text-outline flex items-center gap-0.5" style=""><span class="material-symbols-outlined text-[10px]" data-icon="timer" style="">timer</span>10h - 12h</span>
+<span class="text-[9px] text-primary font-bold" style="">Lab 5</span>
+</div>
+</div>
+</div>
+<!-- Sat -->
+<div class="p-2 border-l border-outline-variant/10 bg-white bg-slate-50/50"></div>
+<!-- Sun -->
+<div class="p-2 border-l border-outline-variant/10 bg-white bg-slate-50/50"></div>
+</div>
+</div>
+</div>
+<!-- Footer (As defined in JSON) -->
+<footer class="mt-12 flex justify-between items-center px-4 w-full py-8 border-t border-[#191d15]/10 font-inter text-[11px] uppercase tracking-[0.05em] text-[#191d15]/60">
+<div class="flex items-center gap-6">
+<p class="" style="">© 2024 VietElite Academic Architect. All rights reserved.</p>
+</div>
+<div class="flex items-center gap-8">
+<a class="hover:text-[#2c6c00] underline transition-all" href="#" style="">Support</a>
+<a class="hover:text-[#2c6c00] underline transition-all" href="#" style="">Privacy Policy</a>
+<a class="hover:text-[#2c6c00] underline transition-all" href="#" style="">Terms</a>
+</div>
+</footer>
+</main>
+<!-- FAB (Suppressed based on context rules, but adding specifically if page aligns with primary action) -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform z-50" style="">
+<span class="material-symbols-outlined" data-icon="edit_calendar" style="">edit_calendar</span>
+</button>
+</body></html>
