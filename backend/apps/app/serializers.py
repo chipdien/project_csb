@@ -87,3 +87,9 @@ class NgayLamViecSerializer(serializers.ModelSerializer):
             "gio_ket_thuc",
         ]
 
+
+class ScheduleRequestSerializer(serializers.Serializer):
+    co_so_dao_tao = serializers.IntegerField()
+    start_date = serializers.DateField()
+    end_date = serializers.DateField()
+

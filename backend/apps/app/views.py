@@ -1,6 +1,9 @@
+from datetime import date
+
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import CaDay, CoSoDaoTao, GiaoVien, LichDay, Lop, NgayLamViec
 from .serializers import (
@@ -11,8 +14,101 @@ from .serializers import (
 	LichDaySerializer,
 	LopSerializer,
 	NgayLamViecSerializer,
+	ScheduleRequestSerializer,
 )
 from .permissions import IsAdminOrStaffWrite
+
+
+def _format_time(value):
+	return f"{value.hour}h{value.minute:02d}"
+
+
+class ScheduleByCoSoView(APIView):
+	permission_classes = [permissions.AllowAny]
+
+	@extend_schema(request=ScheduleRequestSerializer)
+	def post(self, request):
+		co_so_id = request.data.get("co_so_dao_tao")
+		start_date_raw = request.data.get("start_date")
+		end_date_raw = request.data.get("end_date")
+		if not co_so_id or not start_date_raw or not end_date_raw:
+			return Response(
+				{
+					"detail": "Require co_so_dao_tao, start_date, end_date (YYYY-MM-DD).",
+				},
+				status=status.HTTP_400_BAD_REQUEST,
+			)
+
+		try:
+			start_date = date.fromisoformat(start_date_raw)
+			end_date = date.fromisoformat(end_date_raw)
+		except ValueError:
+			return Response(
+				{"detail": "Invalid date format. Use YYYY-MM-DD."},
+				status=status.HTTP_400_BAD_REQUEST,
+			)
+
+		if end_date < start_date:
+			return Response(
+				{"detail": "end_date must be >= start_date."},
+				status=status.HTTP_400_BAD_REQUEST,
+			)
+
+		days = [
+			"monday",
+			"tuesday",
+			"wednesday",
+			"thursday",
+			"friday",
+			"saturday",
+			"sunday",
+		]
+
+		lich_days = (
+			LichDay.objects.select_related(
+				"giao_vien",
+				"ca_day",
+				"ca_day__lop",
+				"ca_day__lop__co_so_dao_tao",
+			)
+			.filter(
+				ngay_day__range=[start_date, end_date],
+				ca_day__lop__co_so_dao_tao_id=co_so_id,
+			)
+			.order_by("ca_day__lop__khoi", "ngay_day", "ca_day__gio_bat_dau")
+		)
+
+		data_by_khoi = {}
+		for item in lich_days:
+			khoi = item.ca_day.lop.khoi
+			if khoi not in data_by_khoi:
+				data_by_khoi[khoi] = {day: [] for day in days}
+			day_key = days[item.ngay_day.weekday()]
+			teacher_id = item.giao_vien.id if item.giao_vien else None
+			teacher_code = f"T{teacher_id:03d}" if teacher_id else ""
+			data_by_khoi[khoi][day_key].append(
+				{
+					"code": item.ca_day.lop.ma_lop,
+					"time": f"{_format_time(item.ca_day.gio_bat_dau)} - {_format_time(item.ca_day.gio_ket_thuc)}",
+					"teacher_id": teacher_code,
+					"teacher_name": item.giao_vien.ho_ten if item.giao_vien else "",
+				}
+			)
+
+		data = [
+			{
+				"khoi": f"Khối {khoi}",
+				"schedule": data_by_khoi[khoi],
+			}
+			for khoi in sorted(data_by_khoi.keys())
+		]
+
+		return Response(
+			{
+				"week_range": f"{start_date:%d/%m/%Y} - {end_date:%d/%m/%Y}",
+				"data": data,
+			}
+		)
 
 
 @extend_schema_view(

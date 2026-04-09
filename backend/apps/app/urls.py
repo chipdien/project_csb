@@ -8,6 +8,7 @@ from .views import (
     LichDayViewSet,
     LopViewSet,
     NgayLamViecViewSet,
+    ScheduleByCoSoView,
 )
 
 router = DefaultRouter()
@@ -19,5 +20,6 @@ router.register("lich-day", LichDayViewSet)
 router.register("ngay-lam-viec", NgayLamViecViewSet)
 
 urlpatterns = [
+    path("schedule/", ScheduleByCoSoView.as_view(), name="schedule-by-co-so"),
     path("", include(router.urls)),
 ]
