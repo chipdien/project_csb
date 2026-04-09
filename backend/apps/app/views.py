@@ -14,7 +14,6 @@ from .serializers import (
 	LichDaySerializer,
 	LopSerializer,
 	NgayLamViecSerializer,
-	ScheduleRequestSerializer,
 )
 from .permissions import IsAdminOrStaffWrite
 
@@ -26,11 +25,11 @@ def _format_time(value):
 class ScheduleByCoSoView(APIView):
 	permission_classes = [permissions.AllowAny]
 
-	@extend_schema(request=ScheduleRequestSerializer)
-	def post(self, request):
-		co_so_id = request.data.get("co_so_dao_tao")
-		start_date_raw = request.data.get("start_date")
-		end_date_raw = request.data.get("end_date")
+	@extend_schema(request=None)
+	def get(self, request):
+		co_so_id = request.query_params.get("co_so_dao_tao")
+		start_date_raw = request.query_params.get("start_date")
+		end_date_raw = request.query_params.get("end_date")
 		if not co_so_id or not start_date_raw or not end_date_raw:
 			return Response(
 				{
