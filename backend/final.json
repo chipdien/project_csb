@@ -1,0 +1,200 @@
+{
+  "week_range": "01/01/2026 - 09/04/2027",
+  "data": [
+    {
+      "khoi": "Khối 7",
+      "schedule": {
+        "monday": [],
+        "tuesday": [
+          {
+            "code": "K7.21",
+            "time": "9h00 - 11h00",
+            "teacher_id": "T010",
+            "teacher_name": "Giao vien 10"
+          }
+        ],
+        "wednesday": [],
+        "thursday": [],
+        "friday": [
+          {
+            "code": "K7.30",
+            "time": "7h00 - 9h00",
+            "teacher_id": "T007",
+            "teacher_name": "Giao vien 7"
+          }
+        ],
+        "saturday": [],
+        "sunday": []
+      }
+    },
+    {
+      "khoi": "Khối 9",
+      "schedule": {
+        "monday": [],
+        "tuesday": [
+          {
+            "code": "K9.14",
+            "time": "9h00 - 11h00",
+            "teacher_id": "T011",
+            "teacher_name": "Giao vien 11"
+          }
+        ],
+        "wednesday": [
+          {
+            "code": "K9.14",
+            "time": "7h00 - 9h00",
+            "teacher_id": "T015",
+            "teacher_name": "Giao vien 15"
+          }
+        ],
+        "thursday": [],
+        "friday": [],
+        "saturday": [
+          {
+            "code": "K9.14",
+            "time": "7h00 - 9h00",
+            "teacher_id": "T007",
+            "teacher_name": "Giao vien 7"
+          }
+        ],
+        "sunday": []
+      }
+    },
+    {
+      "khoi": "Khối 11",
+      "schedule": {
+        "monday": [
+          {
+            "code": "K11.17",
+            "time": "9h00 - 11h00",
+            "teacher_id": "T004",
+            "teacher_name": "Giao vien 4"
+          },
+          {
+            "code": "K11.17",
+            "time": "9h00 - 11h00",
+            "teacher_id": "T007",
+            "teacher_name": "Giao vien 7"
+          }
+        ],
+        "tuesday": [
+          {
+            "code": "K11.19",
+            "time": "7h00 - 9h00",
+            "teacher_id": "T013",
+            "teacher_name": "Giao vien 13"
+          },
+          {
+            "code": "K11.07",
+            "time": "9h00 - 11h00",
+            "teacher_id": "T020",
+            "teacher_name": "Giao vien 20"
+          }
+        ],
+        "wednesday": [
+          {
+            "code": "K11.07",
+            "time": "7h00 - 9h00",
+            "teacher_id": "T008",
+            "teacher_name": "Giao vien 8"
+          },
+          {
+            "code": "K11.24",
+            "time": "7h00 - 9h00",
+            "teacher_id": "T012",
+            "teacher_name": "Giao vien 12"
+          },
+          {
+            "code": "K11.17",
+            "time": "9h00 - 11h00",
+            "teacher_id": "T018",
+            "teacher_name": "Giao vien 18"
+          }
+        ],
+        "thursday": [
+          {
+            "code": "K11.17",
+            "time": "7h00 - 9h00",
+            "teacher_id": "T010",
+            "teacher_name": "Giao vien 10"
+          }
+        ],
+        "friday": [
+          {
+            "code": "K11.07",
+            "time": "9h00 - 11h00",
+            "teacher_id": "T015",
+            "teacher_name": "Giao vien 15"
+          },
+          {
+            "code": "K11.17",
+            "time": "9h00 - 11h00",
+            "teacher_id": "T014",
+            "teacher_name": "Giao vien 14"
+          }
+        ],
+        "saturday": [
+          {
+            "code": "K11.24",
+            "time": "7h00 - 9h00",
+            "teacher_id": "T003",
+            "teacher_name": "Giao vien 3"
+          },
+          {
+            "code": "K11.07",
+            "time": "9h00 - 11h00",
+            "teacher_id": "T001",
+            "teacher_name": "Giao vien 1"
+          }
+        ],
+        "sunday": [
+          {
+            "code": "K11.19",
+            "time": "9h00 - 11h00",
+            "teacher_id": "T016",
+            "teacher_name": "Giao vien 16"
+          },
+          {
+            "code": "K11.24",
+            "time": "9h00 - 11h00",
+            "teacher_id": "T007",
+            "teacher_name": "Giao vien 7"
+          }
+        ]
+      }
+    },
+    {
+      "khoi": "Khối 12",
+      "schedule": {
+        "monday": [],
+        "tuesday": [],
+        "wednesday": [],
+        "thursday": [
+          {
+            "code": "K12.11",
+            "time": "7h00 - 9h00",
+            "teacher_id": "T019",
+            "teacher_name": "Giao vien 19"
+          }
+        ],
+        "friday": [
+          {
+            "code": "K12.23",
+            "time": "9h00 - 11h00",
+            "teacher_id": "T020",
+            "teacher_name": "Giao vien 20"
+          }
+        ],
+        "saturday": [],
+        "sunday": [
+          {
+            "code": "K12.23",
+            "time": "7h00 - 9h00",
+            "teacher_id": "T010",
+            "teacher_name": "Giao vien 10"
+          }
+        ]
+      }
+    }
+  ]
+}
