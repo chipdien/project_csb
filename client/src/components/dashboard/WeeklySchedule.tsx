@@ -1,28 +1,31 @@
 import React, { useState } from 'react';
 import { ArrowLeft, AlertTriangle } from 'lucide-react';
 import ScheduleCard from './ScheduleCard';
-import scheduleData from '../../data/ScheduleDataFake.json';
 import { calculateTimelinePosition, detectConflicts, generateTimeRuler, getScheduleLayers } from '../../utils/timeUtils';
+
+export interface WeeklyScheduleProps {
+  scheduleData: any;
+}
 
 const CARD_HEIGHT = 62;
 const GAP = 8;
 const ROW_PADDING = 16;
 
 const days = [
-  { name: 'Monday', date: '21', color: 'text-primary', key: 'monday' },
-  { name: 'Tuesday', date: '22', color: 'text-primary', key: 'tuesday' },
-  { name: 'Wednesday', date: '23', color: 'text-primary', key: 'wednesday' },
-  { name: 'Thursday', date: '24', color: 'text-primary', key: 'thursday' },
-  { name: 'Friday', date: '25', color: 'text-primary', key: 'friday' },
-  { name: 'Saturday', date: '26', color: 'text-secondary', key: 'saturday' },
-  { name: 'Sunday', date: '27', color: 'text-secondary', key: 'sunday' },
+  { name: 'Monday', color: 'text-primary', key: 'monday' },
+  { name: 'Tuesday', color: 'text-primary', key: 'tuesday' },
+  { name: 'Wednesday', color: 'text-primary', key: 'wednesday' },
+  { name: 'Thursday', color: 'text-primary', key: 'thursday' },
+  { name: 'Friday', color: 'text-primary', key: 'friday' },
+  { name: 'Saturday', color: 'text-secondary', key: 'saturday' },
+  { name: 'Sunday', color: 'text-secondary', key: 'sunday' },
 ];
 
 const TIMELINE_START = 7;
 const TIMELINE_END = 21;
 const timeRuler = generateTimeRuler(TIMELINE_START, TIMELINE_END);
 
-const WeeklySchedule: React.FC = () => {
+const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ scheduleData }) => {
   const [selectedDayKey, setSelectedDayKey] = useState<string | null>(null);
 
   const toggleDay = (key: string) => {
@@ -36,7 +39,7 @@ const WeeklySchedule: React.FC = () => {
     const allSessionsInDay: any[] = [];
     scheduleData.data.forEach(grade => {
       const sessions = (grade.schedule as any)[day.key] || [];
-      sessions.forEach((s: any) => allSessionsInDay.push({ ...s, grade_name: grade.grade_name }));
+      sessions.forEach((s: any) => allSessionsInDay.push({ ...s, khoi: grade.khoi }));
     });
 
     const conflicts = detectConflicts(allSessionsInDay).filter(s => s.isConflict);
@@ -92,10 +95,10 @@ const WeeklySchedule: React.FC = () => {
             <div
               key={day.name}
               onClick={() => toggleDay(day.key)}
-              className="p-4 text-center group border-l border-outline-variant/80 cursor-pointer hover:bg-primary/[0.02] transition-colors relative"
+              className="p-4 flex items-center justify-center group border-l border-outline-variant/80 cursor-pointer hover:bg-primary/[0.02] transition-colors relative"
             >
               <div className="flex items-center justify-between">
-                <div className="flex-1">
+                <div className="flex items-center">
                   <div className="flex items-center justify-center gap-1 mb-1">
                     <span className={`block text-[11px] font-bold ${day.color} uppercase tracking-wider`}>
                       {day.name}
@@ -104,7 +107,6 @@ const WeeklySchedule: React.FC = () => {
                       <AlertTriangle size={12} className="text-red-500 animate-bounce" />
                     )}
                   </div>
-                  <span className="text-lg font-black text-on-surface">{day.date}</span>
                 </div>
               </div>
             </div>
@@ -187,14 +189,14 @@ const WeeklySchedule: React.FC = () => {
 
           return (
             <div
-              key={gradeItem.grade_name}
-              id={`row-${gradeItem.grade_name}`}
+              key={gradeItem.khoi}
+              id={`row-${gradeItem.khoi}`}
               className={`grid transition-all duration-500 overflow-hidden ${isTimelineMode ? 'grid-cols-[120px_1fr]' : 'grid-cols-[120px_repeat(7,1fr)] min-h-[140px]'
                 } bg-slate-50`}
               style={isTimelineMode ? { height: dynamicRowHeight } : {}}
             >
               <div className="p-4 flex flex-col items-center justify-center border-r border-outline-variant/10 bg-white">
-                <span className="text-xl font-extrabold text-on-surface uppercase tracking-tight">{gradeItem.grade_name}</span>
+                <span className="text-xl font-extrabold text-on-surface uppercase tracking-tight">{gradeItem.khoi}</span>
               </div>
 
               {/* Rendering cells */}
