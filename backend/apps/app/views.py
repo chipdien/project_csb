@@ -1,6 +1,6 @@
 from datetime import date
 
-from drf_spectacular.utils import extend_schema, extend_schema_view
+from drf_spectacular.utils import OpenApiParameter, OpenApiTypes, extend_schema, extend_schema_view
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -25,7 +25,32 @@ def _format_time(value):
 class ScheduleByCoSoView(APIView):
 	permission_classes = [permissions.AllowAny]
 
-	@extend_schema(request=None)
+	@extend_schema(
+		request=None,
+		parameters=[
+			OpenApiParameter(
+				name="co_so_dao_tao",
+				type=OpenApiTypes.INT,
+				location=OpenApiParameter.QUERY,
+				required=True,
+				description="ID co so dao tao.",
+			),
+			OpenApiParameter(
+				name="start_date",
+				type=OpenApiTypes.DATE,
+				location=OpenApiParameter.QUERY,
+				required=True,
+				description="Ngay bat dau (YYYY-MM-DD).",
+			),
+			OpenApiParameter(
+				name="end_date",
+				type=OpenApiTypes.DATE,
+				location=OpenApiParameter.QUERY,
+				required=True,
+				description="Ngay ket thuc (YYYY-MM-DD).",
+			),
+		],
+	)
 	def get(self, request):
 		co_so_id = request.query_params.get("co_so_dao_tao")
 		start_date_raw = request.query_params.get("start_date")
@@ -125,7 +150,19 @@ class CoSoDaoTaoViewSet(viewsets.ModelViewSet):
 
 
 @extend_schema_view(
-	list=extend_schema(summary="Danh sách lớp", responses={200: LopSerializer(many=True)}),
+	list=extend_schema(
+		summary="Danh sách lớp",
+		parameters=[
+			OpenApiParameter(
+				name="khoi",
+				type=OpenApiTypes.INT,
+				location=OpenApiParameter.QUERY,
+				required=False,
+				description="Loc theo khoi (1-12).",
+			),
+		],
+		responses={200: LopSerializer(many=True)},
+	),
 	retrieve=extend_schema(summary="Chi tiết lớp", responses={200: LopSerializer}),
 	create=extend_schema(summary="ạo lớp", request=LopSerializer, responses={201: LopSerializer}),
 	update=extend_schema(summary="ập nhật lớp", request=LopSerializer, responses={200: LopSerializer}),
@@ -136,6 +173,17 @@ class LopViewSet(viewsets.ModelViewSet):
 	queryset = Lop.objects.all()
 	serializer_class = LopSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
+
+	def get_queryset(self):
+		queryset = super().get_queryset()
+		khoi_raw = self.request.query_params.get("khoi")
+		if khoi_raw:
+			try:
+				khoi = int(khoi_raw)
+			except ValueError:
+				return queryset.none()
+			return queryset.filter(khoi=khoi)
+		return queryset
 
 
 @extend_schema_view(
