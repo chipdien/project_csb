@@ -1,24 +1,43 @@
-# Quản lý người dùng và Phân quyền (User Auth)
+# Xác thực và Phân quyền (Authentication & Authorization)
 
-Dự án sử dụng hệ thống phân quyền để quản lý mức độ truy cập thông tin khác nhau cho các đối tượng trong VietElite.
+Hệ thống sử dụng cơ chế bảo mật nghiêm ngặt để đảm bảo dữ liệu lịch dạy chỉ được truy cập bởi nhân viên hợp lệ của VietElite.
 
-## 1. Các loại tài khoản (Roles)
+## 1. Cơ chế xác thực (Authentication)
 
-Hệ thống được thiết kế với 3 nhóm người dùng chính:
+Ứng dụng sử dụng **JSON Web Token (JWT)** cho quá trình xác thực không trạng thái (stateless):
 
-| Vai trò | Mô tả quyền hạn |
+- **Access Token**: Có thời hạn ngắn, dùng để gửi kèm trong `Authorization` header của mỗi request API.
+- **Refresh Token**: Sử dụng để lấy Access Token mới khi cái cũ hết hạn mà không yêu cầu người dùng đăng nhập lại.
+- **Lưu trữ**: Token được quản lý an toàn trong `LocalStorage` (hoặc `SessionStorage` tùy cấu hình) thông qua `AuthContext`.
+
+---
+
+## 2. Bảo vệ ứng dụng (Route Protection)
+
+Mọi trang chức năng bên trong Dashboard đều được bảo vệ bởi thành phần `ProtectedRoute`:
+
+- **Nếu chưa đăng nhập**: Hệ thống tự động chuyển hướng người dùng về trang `/login`.
+- **Nếu đã đăng nhập**: Người dùng có thể truy cập các tính năng tương ứng với quyền hạn của mình.
+- **Đăng xuất (Logout)**: Khi người dùng chọn đăng xuất, hệ thống sẽ xóa sạch token và reset trạng thái của ứng dụng.
+
+---
+
+## 3. Phân quyền người dùng (Authorization)
+
+Dựa trên cấu trúc Backend Django, hệ thống áp dụng các quy tắc phân quyền sau:
+
+| Quyền hạn | Khả năng truy cập |
 | :--- | :--- |
-| **Admin** | Quyền cao nhất. Quản lý toàn bộ lịch dạy, thêm/xóa giáo viên, chỉnh sửa thông tin lớp học và cài đặt hệ thống. |
-| **Manager** | Quyền quản lý cấp trung. Có thể xem toàn bộ lịch dạy, xuất báo cáo nhưng không thể thay đổi các cài đặt hệ thống quan trọng. |
-| **Teacher** | Chỉ có thể xem lịch giảng dạy của cá nhân mình và thông báo liên quan. |
+| **Admin/Staff** | Có toàn quyền: Xem, Thêm, Sửa, Xóa các thực thể (Giáo viên, Lớp, Lịch dạy). |
+| **Viewer/Authenticated** | Chỉ có quyền Xem (Read-only) dữ liệu lịch học, không thể thực hiện các hành động thay đổi dữ liệu. |
 
-## 2. Giao diện đăng nhập
+> [!IMPORTANT]
+> Toàn bộ logic kiểm tra quyền được thực hiện ở cả 2 phía:
+> 1. **Frontend**: Ẩn/Hiện các nút chức năng (ví dụ: nút "Add Session").
+> 2. **Backend**: Kiểm tra qua `permission_classes` (ví dụ: `IsAdminOrStaffWrite`) để đảm bảo bảo mật tuyệt đối.
 
-Giao diện đăng nhập được tối ưu hóa sự chuyên nghiệp, hỗ trợ:
-- Xác thực qua Email/Mật khẩu.
-- (Dự kiến) Đăng nhập nhanh qua Google Workspace.
+---
 
-## 3. Chính sách bảo mật
+## 4. Giao diện Đăng nhập (Login UI)
 
-- **Phiên làm việc (Sessions)**: Sử dụng JWT (JSON Web Token) để xác thực. Token sẽ được lưu trong `HttpOnly Cookie` để đảm bảo an toàn.
-- **Bảo vệ Routes**: Các trang quản trị được bảo vệ bởi **Middleware/Auth Guards**, nếu chưa đăng nhập hoặc không đủ quyền sẽ bị Redirect về trang Login.
+Trang đăng nhập được thiết kế tối giản, tập trung vào trải nghiệm người dùng với các thông báo lỗi rõ ràng khi nhập sai thông tin tài khoản hoặc mật khẩu.
