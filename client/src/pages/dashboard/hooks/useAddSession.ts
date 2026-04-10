@@ -37,7 +37,7 @@ export const useAddSession = (
           const [teacherData, shiftData, classData] = await Promise.all([
             scheduleService.fetchTeachers(),
             scheduleService.fetchShifts(),
-            scheduleService.fetchClasses(khoiNumber)
+            scheduleService.fetchClasses(khoiNumber, 1)
           ]);
 
           setTeachers(Array.isArray(teacherData) ? teacherData : (teacherData.results || []));
@@ -54,8 +54,8 @@ export const useAddSession = (
     }
   }, [isOpen, targetCell]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e && e.preventDefault) e.preventDefault();
     if (!selectedTeacher || !selectedShift || !targetCell) return;
 
     setSubmitting(true);

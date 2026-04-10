@@ -6,4 +6,6 @@ export const API_ENDPOINTS = {
   SHIFTS: `${API_BASE_URL}/api/ca-day/`,
   SESSIONS: `${API_BASE_URL}/api/lich-day/`,
   CLASSES: `${API_BASE_URL}/api/lop/`,
+  AUTH_LOGIN: `${API_BASE_URL}/api/auth/token/`,
+  AUTH_REFRESH: `${API_BASE_URL}/api/auth/token/refresh/`,
 };

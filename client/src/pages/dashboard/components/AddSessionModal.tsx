@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, AlertCircle, Loader2 } from 'lucide-react';
 import { useAddSession } from '@/pages/dashboard/hooks/useAddSession';
+import ConfirmModal from '@/components/ConfirmModal';
 
 interface AddSessionModalProps {
   isOpen: boolean;
@@ -26,7 +27,31 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({ isOpen, onClose, targ
     handleSubmit
   } = useAddSession(isOpen, targetCell, onSuccess);
 
+  const [showConfirm, setShowConfirm] = React.useState(false);
+
+  // Reset confirm state when modal closes or opens
+  React.useEffect(() => {
+    if (!isOpen) setShowConfirm(false);
+  }, [isOpen]);
+
   if (!isOpen) return null;
+
+  if (showConfirm) {
+    return (
+      <ConfirmModal
+        isOpen={showConfirm}
+        onClose={() => setShowConfirm(false)}
+        onConfirm={() => handleSubmit()}
+        title="Xác nhận lưu ca dạy"
+        message="Bạn có chắc chắn muốn thêm ca dạy này không?"
+        cancelText="Quay lại sửa"
+        confirmText="Xác nhận Lưu"
+        isLoading={submitting}
+        error={error}
+        type="warning"
+      />
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -66,7 +91,7 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({ isOpen, onClose, targ
               <p className="text-sm">Đang tải dữ liệu...</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={(e) => { e.preventDefault(); setShowConfirm(true); }} className="space-y-4">
               <div>
                 <label className="block text-sm font-bold text-on-surface mb-1.5" htmlFor="class-select">Lớp</label>
                 <select
@@ -119,7 +144,7 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({ isOpen, onClose, targ
                 </select>
               </div>
 
-              <div className="pt-4 flex justify-end gap-3">
+              <div className="pt-4 flex justify-end gap-3 min-h-[40px]">
                 <button
                   type="button"
                   onClick={onClose}
@@ -132,8 +157,7 @@ const AddSessionModal: React.FC<AddSessionModalProps> = ({ isOpen, onClose, targ
                   disabled={submitting || !selectedTeacher || !selectedClass || !selectedShift}
                   className="px-5 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
                 >
-                  {submitting && <Loader2 size={16} className="animate-spin" />}
-                  {submitting ? 'Đang lưu...' : 'Lưu Ca Dạy'}
+                  {submitting ? 'Đang tải...' : 'Lưu Ca Dạy'}
                 </button>
               </div>
             </form>

@@ -7,6 +7,7 @@ import { calculateTimelinePosition, detectConflicts, generateTimeRuler, getSched
 export interface WeeklyScheduleProps {
   scheduleData: any;
   startDate: string;
+  onRefresh?: () => void;
 }
 
 const CARD_HEIGHT = 62;
@@ -17,7 +18,7 @@ const ALL_KHOI = [6, 7, 8, 9, 10, 11, 12].map(num => `Khối ${num}`);
 const TIMELINE_START = 7;
 const TIMELINE_END = 21;
 
-const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ scheduleData, startDate }) => {
+const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ scheduleData, startDate, onRefresh }) => {
   const days = getWeekDays(startDate);
   const timeRuler = generateTimeRuler(TIMELINE_START, TIMELINE_END);
   const [selectedDayKey, setSelectedDayKey] = useState<string | null>(null);
@@ -294,7 +295,11 @@ const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ scheduleData, startDate
         onSuccess={() => {
           setIsModalOpen(false);
           // Gọi refresh data nếu props cho phép thay vì reload cứng trang
-          window.location.reload();
+          if (onRefresh) {
+            onRefresh();
+          } else {
+            window.location.reload();
+          }
         }}
       />
     </div>

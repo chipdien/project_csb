@@ -72,21 +72,24 @@ const WeekPickerModal: React.FC<WeekPickerModalProps> = ({ isOpen, onClose, onSe
            </div>
            
            <div className="space-y-2 mt-4 max-h-[350px] overflow-y-auto pr-1">
-             {weeks.map((w, i) => (
-                <button 
-                  key={i} 
-                  onClick={() => { onSelect(w.start); onClose(); }}
-                  className="w-full flex items-center justify-between px-4 py-3 border border-outline-variant/40 rounded-lg hover:border-primary hover:bg-primary/5 transition-all text-left group"
-                >
-                  <div>
-                    <div className="font-bold text-primary text-sm">Tuần {i + 1}</div>
-                    <div className="text-outline text-xs mt-0.5">{w.label}</div>
-                  </div>
-                  <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-                    <CalendarIcon size={12} className={i === 0 ? "text-primary" : "text-outline-variant"} />
-                  </div>
-                </button>
-             ))}
+             {weeks.map((w, i) => {
+                const isSelected = initialDate.getTime() >= w.start.getTime() && initialDate.getTime() < w.end.getTime() + 86400000;
+                return (
+                  <button 
+                    key={i} 
+                    onClick={() => { onSelect(w.start); onClose(); }}
+                    className={`w-full flex items-center justify-between px-4 py-3 border rounded-lg transition-all text-left group ${isSelected ? 'border-primary bg-primary/5' : 'border-outline-variant/40 hover:border-primary hover:bg-primary/5'}`}
+                  >
+                    <div>
+                      <div className={`font-bold text-sm ${isSelected ? 'text-primary' : 'text-on-surface'}`}>Tuần {i + 1}</div>
+                      <div className={`text-xs mt-0.5 ${isSelected ? 'text-primary/80' : 'text-outline'}`}>{w.label}</div>
+                    </div>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${isSelected ? 'bg-primary text-white' : 'bg-slate-100 text-outline-variant group-hover:bg-primary group-hover:text-white'}`}>
+                      <CalendarIcon size={12} />
+                    </div>
+                  </button>
+                );
+             })}
            </div>
         </div>
       </div>

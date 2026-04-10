@@ -1,10 +1,16 @@
 import { API_ENDPOINTS } from '@/config/api-endpoint';
+import { authService } from './auth.service';
 
 export interface CreateSessionData {
   giao_vien: number;
   ca_day: number;
   ngay_day: string;
 }
+
+const getAuthHeaders = () => {
+  const token = authService.getToken();
+  return token ? { 'Authorization': `Bearer ${token}` } : {};
+};
 
 export const scheduleService = {
   fetchSchedule: async (co_so_dao_tao: number, start_date: string, end_date: string) => {
@@ -16,7 +22,8 @@ export const scheduleService = {
     const res = await fetch(`${API_ENDPOINTS.SCHEDULE}?${params.toString()}`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
       }
     });
     if (!res.ok) {
@@ -26,7 +33,9 @@ export const scheduleService = {
   },
 
   fetchTeachers: async () => {
-    const res = await fetch(API_ENDPOINTS.TEACHERS);
+    const res = await fetch(API_ENDPOINTS.TEACHERS, {
+      headers: { ...getAuthHeaders() }
+    });
     if (!res.ok) {
       throw new Error('Failed to fetch data');
     }
@@ -34,16 +43,23 @@ export const scheduleService = {
   },
 
   fetchShifts: async () => {
-    const res = await fetch(API_ENDPOINTS.SHIFTS);
+    const res = await fetch(API_ENDPOINTS.SHIFTS, {
+      headers: { ...getAuthHeaders() }
+    });
     if (!res.ok) {
       throw new Error('Failed to fetch data');
     }
     return res.json();
   },
 
-  fetchClasses: async (khoi: string) => {
+  fetchClasses: async (khoi: string, co_so_dao_tao?: number) => {
     const params = new URLSearchParams({ khoi });
-    const res = await fetch(`${API_ENDPOINTS.CLASSES}?${params.toString()}`);
+    if (co_so_dao_tao) {
+      params.append('co_so_dao_tao', co_so_dao_tao.toString());
+    }
+    const res = await fetch(`${API_ENDPOINTS.CLASSES}?${params.toString()}`, {
+      headers: { ...getAuthHeaders() }
+    });
     if (!res.ok) {
       throw new Error('Failed to fetch data');
     }
@@ -55,11 +71,19 @@ export const scheduleService = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...getAuthHeaders()
       },
       body: JSON.stringify(data),
     });
     if (!res.ok) {
-      throw new Error('Lỗi khi lưu ca dạy');
+      let errorMsg = 'Lỗi khi lưu ca dạy';
+      try {
+        const errData = await res.json();
+        errorMsg = errData.detail || (typeof errData === 'string' ? errData : JSON.stringify(errData));
+      } catch (e) {
+        errorMsg = await res.text();
+      }
+      throw new Error(errorMsg);
     }
     return res.json();
   }
