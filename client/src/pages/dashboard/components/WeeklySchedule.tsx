@@ -1,32 +1,28 @@
 import React, { useState } from 'react';
 import { ArrowLeft, AlertTriangle } from 'lucide-react';
 import ScheduleCard from './ScheduleCard';
-import { calculateTimelinePosition, detectConflicts, generateTimeRuler, getScheduleLayers } from '../../utils/timeUtils';
+import AddSessionModal from './AddSessionModal';
+import { calculateTimelinePosition, detectConflicts, generateTimeRuler, getScheduleLayers, getWeekDays } from '@/utils/timeUtils';
 
 export interface WeeklyScheduleProps {
   scheduleData: any;
+  startDate: string;
 }
 
 const CARD_HEIGHT = 62;
 const GAP = 8;
 const ROW_PADDING = 16;
-
-const days = [
-  { name: 'Monday', color: 'text-primary', key: 'monday' },
-  { name: 'Tuesday', color: 'text-primary', key: 'tuesday' },
-  { name: 'Wednesday', color: 'text-primary', key: 'wednesday' },
-  { name: 'Thursday', color: 'text-primary', key: 'thursday' },
-  { name: 'Friday', color: 'text-primary', key: 'friday' },
-  { name: 'Saturday', color: 'text-secondary', key: 'saturday' },
-  { name: 'Sunday', color: 'text-secondary', key: 'sunday' },
-];
+const ALL_KHOI = [6, 7, 8, 9, 10, 11, 12].map(num => `Khối ${num}`);
 
 const TIMELINE_START = 7;
 const TIMELINE_END = 21;
-const timeRuler = generateTimeRuler(TIMELINE_START, TIMELINE_END);
 
-const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ scheduleData }) => {
+const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ scheduleData, startDate }) => {
+  const days = getWeekDays(startDate);
+  const timeRuler = generateTimeRuler(TIMELINE_START, TIMELINE_END);
   const [selectedDayKey, setSelectedDayKey] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [targetCell, setTargetCell] = useState<{ khoi: string; isoDate: string; displayDate: string } | null>(null);
 
   const toggleDay = (key: string) => {
     setSelectedDayKey(prev => prev === key ? null : key);
@@ -37,7 +33,7 @@ const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ scheduleData }) => {
   // 1. Phân tích xung đột toàn tuần để hiển thị icon cảnh báo ở Header
   const dayConflictsMap = days.reduce((acc, day) => {
     const allSessionsInDay: any[] = [];
-    scheduleData.data.forEach(grade => {
+    scheduleData.data.forEach((grade: any) => {
       const sessions = (grade.schedule as any)[day.key] || [];
       sessions.forEach((s: any) => allSessionsInDay.push({ ...s, khoi: grade.khoi }));
     });
@@ -99,9 +95,12 @@ const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ scheduleData }) => {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <span className={`block text-[11px] font-bold ${day.color} uppercase tracking-wider`}>
+                  <div className="flex flex-col items-center justify-center gap-1 mb-1">
+                    <span className={`block text-[11px] font-bold text-primary uppercase tracking-wider`}>
                       {day.name}
+                    </span>
+                    <span className="text-[10px] text-outline-variant font-medium mt-0.5">
+                      {day.dateFormatted}
                     </span>
                     {dayConflictsMap[day.key]?.length > 0 && (
                       <AlertTriangle size={12} className="text-red-500 animate-bounce" />
@@ -172,7 +171,13 @@ const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ scheduleData }) => {
 
       {/* Grid Rows */}
       <div className="divide-y divide-outline-variant/50">
-        {scheduleData.data.map((gradeItem) => {
+        {ALL_KHOI.map((khoiName) => {
+          // Tìm dữ liệu khối trong mảng data từ backend, nếu không có thì dùng object rỗng
+          const gradeItem = scheduleData?.data?.find((g: any) => g.khoi === khoiName) || {
+            khoi: khoiName,
+            schedule: {}
+          };
+
           const rawSessions = isTimelineMode ? ((gradeItem.schedule as any)[selectedDayKey!] || []) : [];
 
           // 4. Gán isConflict cho từng session dựa trên danh sách xung đột toàn cục đã tính ở trên
@@ -206,8 +211,11 @@ const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ scheduleData }) => {
                   return (
                     <div
                       key={day.key}
-                      onClick={() => toggleDay(day.key)}
-                      className="p-2 space-y-2 border-l border-outline-variant/50 bg-white hover:bg-surface/30 transition-colors overflow-y-auto cursor-pointer relative"
+                      className="p-2 space-y-2 border-l border-outline-variant/50 bg-white hover:bg-primary/5 cursor-pointer transition-colors overflow-y-auto relative"
+                      onClick={() => {
+                        setTargetCell({ khoi: gradeItem.khoi, isoDate: day.isoDate, displayDate: day.dateFormatted });
+                        setIsModalOpen(true);
+                      }}
                     >
                       {sessions.length > 0 ? (
                         sessions.map((session: any, sIdx: number) => {
@@ -278,6 +286,17 @@ const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ scheduleData }) => {
           );
         })}
       </div>
+
+      <AddSessionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        targetCell={targetCell}
+        onSuccess={() => {
+          setIsModalOpen(false);
+          // Gọi refresh data nếu props cho phép thay vì reload cứng trang
+          window.location.reload();
+        }}
+      />
     </div>
   );
 };

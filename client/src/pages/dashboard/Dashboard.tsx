@@ -1,9 +1,16 @@
-import React from 'react';
-import WeeklySchedule from '@/components/dashboard/WeeklySchedule';
+import React, { useState } from 'react';
+import WeeklySchedule from '@/pages/dashboard/components/WeeklySchedule';
 import { useSchedule } from '@/pages/dashboard/hooks/useSchedule';
+import { getWeekRange } from '@/utils/timeUtils';
+import { Calendar as CalendarIcon } from 'lucide-react';
+import WeekPickerModal from '@/pages/dashboard/components/WeekPickerModal';
 
 const Dashboard: React.FC = () => {
-  const { scheduleData, isLoading, error } = useSchedule(1, '2026-04-05', '2026-04-11');
+  const [currentDate, setCurrentDate] = useState<Date>(new Date('2026-04-05'));
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  const { start, end } = getWeekRange(currentDate);
+  const { scheduleData, isLoading, error } = useSchedule(1, start, end);
 
   if (isLoading) {
     return <div className="p-8 min-h-full bg-white flex items-center justify-center">Loading schedule...</div>;
@@ -13,26 +20,52 @@ const Dashboard: React.FC = () => {
     return <div className="p-8 min-h-full bg-white flex items-center justify-center text-red-500">Error: {error}</div>;
   }
 
+  const startDateObj = new Date(start);
+  const endDateObj = new Date(end);
+  const labelStart = `${String(startDateObj.getDate()).padStart(2, '0')}/${String(startDateObj.getMonth()+1).padStart(2, '0')}`;
+  const labelEnd = `${String(endDateObj.getDate()).padStart(2, '0')}/${String(endDateObj.getMonth()+1).padStart(2, '0')}`;
+  const weekLabel = `Tuần: ${labelStart} - ${labelEnd}`;
+
   return (
     <div className="p-8 min-h-full bg-white">
       {/* Header & Date Range */}
       <div className="mb-8 flex justify-between items-end">
         <div>
           <h2 className="text-3xl font-extrabold tracking-tight text-on-surface">Quản lý ca dạy lớp học</h2>
-          <p className="text-outline font-medium mt-1">{scheduleData?.week_range || 'Oct 21 - 27, 2026'} • Academic Term 1</p>
+          <p className="text-outline font-medium mt-1">{scheduleData?.week_range || weekLabel} • Academic Term 1</p>
         </div>
-        <div className="flex gap-2 bg-surface-container-low p-1 rounded-full">
-          <button className="px-4 py-1.5 rounded-full bg-white text-xs font-bold text-primary shadow-sm">Tuần</button>
-          <button className="px-4 py-1.5 rounded-full text-xs font-bold text-outline hover:text-primary transition-colors">Tháng</button>
-          <button className="px-4 py-1.5 rounded-full text-xs font-bold text-outline hover:text-primary transition-colors">Ngày</button>
+        <div className="flex gap-4 items-center">
+          
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 border border-outline-variant/60 rounded-lg bg-white hover:bg-slate-50 hover:border-primary/50 transition-all shadow-sm"
+          >
+            <CalendarIcon size={18} className="text-primary" />
+            <span className="text-sm font-bold text-on-surface">{weekLabel}</span>
+          </button>
+
+          <div className="flex gap-2 bg-surface-container-low p-1 rounded-full">
+            <button className="px-4 py-1.5 rounded-full bg-white text-xs font-bold text-primary shadow-sm">Tuần</button>
+            <button className="px-4 py-1.5 rounded-full text-xs font-bold text-outline hover:text-primary transition-colors">Tháng</button>
+            <button className="px-4 py-1.5 rounded-full text-xs font-bold text-outline hover:text-primary transition-colors">Ngày</button>
+          </div>
         </div>
       </div>
 
       <div className='flex justify-between items-center mb-4'>
         <h2 className='text-xl font-bold text-red-500'>***Chú ý: Các ca màu đỏ là các ca có giáo viên bị trùng lịch dạy***</h2>
       </div>
+      
       {/* Weekly Grid */}
-      <WeeklySchedule scheduleData={scheduleData} />
+      <WeeklySchedule scheduleData={scheduleData} startDate={start} />
+
+      {/* Week Picker Modal */}
+      <WeekPickerModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onSelect={(newDate) => setCurrentDate(newDate)} 
+        initialDate={currentDate} 
+      />
     </div>
   );
 };

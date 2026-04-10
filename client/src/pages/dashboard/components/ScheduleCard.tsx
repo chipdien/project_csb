@@ -37,7 +37,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   return (
     <div 
       id={id}
-      className={`px-2 py-2 rounded shadow-sm border-l-2 group cursor-pointer hover:shadow-md transition-all duration-300 min-h-[40px] ${
+      className={`px-2 py-2 rounded shadow-sm border-l-2 group transition-all duration-300 min-h-[40px] ${
         isTimelineMode ? 'absolute flex flex-col justify-between' : 'relative'
       } ${variantClasses[variant]}`}
       style={style}
