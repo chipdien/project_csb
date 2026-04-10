@@ -187,17 +187,40 @@ class LopViewSet(viewsets.ModelViewSet):
 
 
 @extend_schema_view(
-	list=extend_schema(summary="Danh sách ca ngày", responses={200: CaDaySerializer(many=True)}),
-	retrieve=extend_schema(summary="Chi tiết ca ngày", responses={200: CaDaySerializer}),
-	create=extend_schema(summary="tạo ca ngày", request=CaDaySerializer, responses={201: CaDaySerializer}),
-	update=extend_schema(summary="cập nhật ca ngày", request=CaDaySerializer, responses={200: CaDaySerializer}),
-	partial_update=extend_schema(summary="cập nhật một phần ca ngày", request=CaDaySerializer, responses={200: CaDaySerializer}),
+	list=extend_schema(
+		summary="Danh sách ca dạy",
+		parameters=[
+			OpenApiParameter(
+				name="lop",
+				type=OpenApiTypes.INT,
+				location=OpenApiParameter.QUERY,
+				required=False,
+				description="Loc ca dạy theo lop.",
+			),
+		],
+		responses={200: CaDaySerializer(many=True)},
+	),
+	retrieve=extend_schema(summary="Chi tiết ca dạy", responses={200: CaDaySerializer}),
+	create=extend_schema(summary="tạo ca dạy", request=CaDaySerializer, responses={201: CaDaySerializer}),
+	update=extend_schema(summary="cập nhật ca dạy", request=CaDaySerializer, responses={200: CaDaySerializer}),
+	partial_update=extend_schema(summary="cập nhật một phần ca dạy", request=CaDaySerializer, responses={200: CaDaySerializer}),
 	destroy=extend_schema(summary="xóa ca ngày", responses={204: None}),
 )
 class CaDayViewSet(viewsets.ModelViewSet):
 	queryset = CaDay.objects.all()
 	serializer_class = CaDaySerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
+
+	def get_queryset(self):
+		queryset = super().get_queryset()
+		lop_raw = self.request.query_params.get("lop")
+		if lop_raw:
+			try:
+				lop_id = int(lop_raw)
+			except ValueError:
+				return queryset.none()
+			return queryset.filter(lop_id=lop_id)
+		return queryset
 
 
 @extend_schema_view(
