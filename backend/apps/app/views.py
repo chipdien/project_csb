@@ -1,39 +1,82 @@
 from datetime import date
 
 from drf_spectacular.utils import OpenApiParameter, OpenApiTypes, extend_schema, extend_schema_view
-from rest_framework import permissions, status, viewsets
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework import permissions, viewsets
+from rest_framework.exceptions import ValidationError
 
-from .models import CaDay, CoSoDaoTao, GiaoVien, LichDay, Lop, NgayLamViec
+from .models import (
+	Centers,
+	EduClassConfigs,
+	EduClasses,
+	EduCourses,
+	EduDomains,
+	EduSessions,
+	EduTeachers,
+	Users,
+)
 from .serializers import (
-	CaDaySerializer,
-	CoSoDaoTaoSerializer,
-	GiaoVienCreateSerializer,
-	GiaoVienSerializer,
-	LichDaySerializer,
-	LopSerializer,
-	NgayLamViecSerializer,
+	CentersSerializer,
+	EduClassConfigsSerializer,
+	EduClassesSerializer,
+	EduCoursesSerializer,
+	EduDomainsSerializer,
+	EduSessionsSerializer,
+	EduTeachersSerializer,
+	UsersSerializer,
 )
 from .permissions import IsAdminOrStaffWrite
 
 
-def _format_time(value):
-	return f"{value.hour}h{value.minute:02d}"
+@extend_schema_view(
+	list=extend_schema(summary="Danh sách trung tâm", responses={200: CentersSerializer(many=True)}),
+	retrieve=extend_schema(summary="Chi tiết trung tâm", responses={200: CentersSerializer}),
+)
+class CentersViewSet(viewsets.ModelViewSet):
+	queryset = Centers.objects.all()
+	serializer_class = CentersSerializer
+	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
 
 
-class ScheduleByCoSoView(APIView):
-	permission_classes = [permissions.AllowAny]
+@extend_schema_view(
+	list=extend_schema(summary="Danh sách lớp", responses={200: EduClassesSerializer(many=True)}),
+	retrieve=extend_schema(summary="Chi tiết lớp", responses={200: EduClassesSerializer}),
+)
+class EduClassesViewSet(viewsets.ModelViewSet):
+	queryset = EduClasses.objects.all()
+	serializer_class = EduClassesSerializer
+	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
 
-	@extend_schema(
-		request=None,
+
+@extend_schema_view(
+	list=extend_schema(summary="Danh sách khóa học", responses={200: EduCoursesSerializer(many=True)}),
+	retrieve=extend_schema(summary="Chi tiết khóa học", responses={200: EduCoursesSerializer}),
+)
+class EduCoursesViewSet(viewsets.ModelViewSet):
+	queryset = EduCourses.objects.all()
+	serializer_class = EduCoursesSerializer
+	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
+
+
+@extend_schema_view(
+	list=extend_schema(summary="Danh sách lĩnh vực", responses={200: EduDomainsSerializer(many=True)}),
+	retrieve=extend_schema(summary="Chi tiết lĩnh vực", responses={200: EduDomainsSerializer}),
+)
+class EduDomainsViewSet(viewsets.ModelViewSet):
+	queryset = EduDomains.objects.all()
+	serializer_class = EduDomainsSerializer
+	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
+
+
+@extend_schema_view(
+	list=extend_schema(
+		summary="Danh sách buổi học",
 		parameters=[
 			OpenApiParameter(
-				name="co_so_dao_tao",
+				name="center_id",
 				type=OpenApiTypes.INT,
 				location=OpenApiParameter.QUERY,
-				required=True,
-				description="ID co so dao tao.",
+				required=False,
+				description="Loc theo center_id.",
 			),
 			OpenApiParameter(
 				name="start_date",
@@ -50,226 +93,68 @@ class ScheduleByCoSoView(APIView):
 				description="Ngay ket thuc (YYYY-MM-DD).",
 			),
 		],
-	)
-	def get(self, request):
-		co_so_id = request.query_params.get("co_so_dao_tao")
-		start_date_raw = request.query_params.get("start_date")
-		end_date_raw = request.query_params.get("end_date")
-		if not co_so_id or not start_date_raw or not end_date_raw:
-			return Response(
-				{
-					"detail": "Require co_so_dao_tao, start_date, end_date (YYYY-MM-DD).",
-				},
-				status=status.HTTP_400_BAD_REQUEST,
-			)
+		responses={200: EduSessionsSerializer(many=True)},
+	),
+	retrieve=extend_schema(summary="Chi tiết buổi học", responses={200: EduSessionsSerializer}),
+)
+class EduSessionsViewSet(viewsets.ModelViewSet):
+	queryset = EduSessions.objects.all()
+	serializer_class = EduSessionsSerializer
+	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
 
+	def get_queryset(self):
+		queryset = super().get_queryset()
+		if self.action != "list":
+			return queryset
+		start_date_raw = self.request.query_params.get("start_date")
+		end_date_raw = self.request.query_params.get("end_date")
+		center_id_raw = self.request.query_params.get("center_id")
+		if not start_date_raw or not end_date_raw:
+			raise ValidationError("start_date and end_date are required (YYYY-MM-DD).")
 		try:
 			start_date = date.fromisoformat(start_date_raw)
 			end_date = date.fromisoformat(end_date_raw)
-		except ValueError:
-			return Response(
-				{"detail": "Invalid date format. Use YYYY-MM-DD."},
-				status=status.HTTP_400_BAD_REQUEST,
-			)
-
+		except ValueError as exc:
+			raise ValidationError("Invalid date format. Use YYYY-MM-DD.") from exc
 		if end_date < start_date:
-			return Response(
-				{"detail": "end_date must be >= start_date."},
-				status=status.HTTP_400_BAD_REQUEST,
-			)
-
-		days = [
-			"monday",
-			"tuesday",
-			"wednesday",
-			"thursday",
-			"friday",
-			"saturday",
-			"sunday",
-		]
-
-		lich_days = (
-			LichDay.objects.select_related(
-				"giao_vien",
-				"ca_day",
-				"ca_day__lop",
-				"ca_day__lop__co_so_dao_tao",
-			)
-			.filter(
-				ngay_day__range=[start_date, end_date],
-				ca_day__lop__co_so_dao_tao_id=co_so_id,
-			)
-			.order_by("ca_day__lop__khoi", "ngay_day", "ca_day__gio_bat_dau")
-		)
-
-		data_by_khoi = {}
-		for item in lich_days:
-			khoi = item.ca_day.lop.khoi
-			if khoi not in data_by_khoi:
-				data_by_khoi[khoi] = {day: [] for day in days}
-			day_key = days[item.ngay_day.weekday()]
-			teacher_id = item.giao_vien.id if item.giao_vien else None
-			teacher_code = f"T{teacher_id:03d}" if teacher_id else ""
-			data_by_khoi[khoi][day_key].append(
-				{
-					"code": item.ca_day.lop.ma_lop,
-					"time": f"{_format_time(item.ca_day.gio_bat_dau)} - {_format_time(item.ca_day.gio_ket_thuc)}",
-					"teacher_id": teacher_code,
-					"teacher_name": item.giao_vien.ho_ten if item.giao_vien else "",
-				}
-			)
-
-		data = [
-			{
-				"khoi": f"Khối {khoi}",
-				"schedule": data_by_khoi[khoi],
-			}
-			for khoi in sorted(data_by_khoi.keys())
-		]
-
-		return Response(
-			{
-				"week_range": f"{start_date:%d/%m/%Y} - {end_date:%d/%m/%Y}",
-				"data": data,
-			}
-		)
-
-
-@extend_schema_view(
-	list=extend_schema(summary="Danh sách cơ sở đào tạo", responses={200: CoSoDaoTaoSerializer(many=True)}),
-	retrieve=extend_schema(summary="Chi tiết cơ sở đào tạo", responses={200: CoSoDaoTaoSerializer}),
-	create=extend_schema(summary="ạo cơ sở đào tạo", request=CoSoDaoTaoSerializer, responses={201: CoSoDaoTaoSerializer}),
-	update=extend_schema(summary="ập nhật cơ sở đào tạo", request=CoSoDaoTaoSerializer, responses={200: CoSoDaoTaoSerializer}),
-	partial_update=extend_schema(summary="ập nhật một phần cơ sở đào tạo", request=CoSoDaoTaoSerializer, responses={200: CoSoDaoTaoSerializer}),
-	destroy=extend_schema(summary="xóa cơ sở đào tạo", responses={204: None}),
-)
-class CoSoDaoTaoViewSet(viewsets.ModelViewSet):
-	queryset = CoSoDaoTao.objects.all()
-	serializer_class = CoSoDaoTaoSerializer
-	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
-
-
-@extend_schema_view(
-	list=extend_schema(
-		summary="Danh sách lớp",
-		parameters=[
-			OpenApiParameter(
-				name="khoi",
-				type=OpenApiTypes.INT,
-				location=OpenApiParameter.QUERY,
-				required=False,
-				description="Loc theo khoi (1-12).",
-			),
-		],
-		responses={200: LopSerializer(many=True)},
-	),
-	retrieve=extend_schema(summary="Chi tiết lớp", responses={200: LopSerializer}),
-	create=extend_schema(summary="ạo lớp", request=LopSerializer, responses={201: LopSerializer}),
-	update=extend_schema(summary="ập nhật lớp", request=LopSerializer, responses={200: LopSerializer}),
-	partial_update=extend_schema(summary="ập nhật một phần lớp", request=LopSerializer, responses={200: LopSerializer}),
-	destroy=extend_schema(summary="xóa lớp", responses={204: None}),
-)
-class LopViewSet(viewsets.ModelViewSet):
-	queryset = Lop.objects.all()
-	serializer_class = LopSerializer
-	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
-
-	def get_queryset(self):
-		queryset = super().get_queryset()
-		khoi_raw = self.request.query_params.get("khoi")
-		if khoi_raw:
+			raise ValidationError("end_date must be >= start_date.")
+		queryset = queryset.filter(date__range=[start_date, end_date])
+		if center_id_raw:
 			try:
-				khoi = int(khoi_raw)
-			except ValueError:
-				return queryset.none()
-			return queryset.filter(khoi=khoi)
+				center_id = int(center_id_raw)
+			except ValueError as exc:
+				raise ValidationError("center_id must be an integer.") from exc
+			queryset = queryset.filter(center_id=center_id)
+		else:
+			raise ValidationError("center_id is required.")
 		return queryset
 
 
 @extend_schema_view(
-	list=extend_schema(
-		summary="Danh sách ca dạy",
-		parameters=[
-			OpenApiParameter(
-				name="lop",
-				type=OpenApiTypes.INT,
-				location=OpenApiParameter.QUERY,
-				required=False,
-				description="Loc ca dạy theo lop.",
-			),
-		],
-		responses={200: CaDaySerializer(many=True)},
-	),
-	retrieve=extend_schema(summary="Chi tiết ca dạy", responses={200: CaDaySerializer}),
-	create=extend_schema(summary="tạo ca dạy", request=CaDaySerializer, responses={201: CaDaySerializer}),
-	update=extend_schema(summary="cập nhật ca dạy", request=CaDaySerializer, responses={200: CaDaySerializer}),
-	partial_update=extend_schema(summary="cập nhật một phần ca dạy", request=CaDaySerializer, responses={200: CaDaySerializer}),
-	destroy=extend_schema(summary="xóa ca ngày", responses={204: None}),
+	list=extend_schema(summary="Danh sách giáo viên", responses={200: EduTeachersSerializer(many=True)}),
+	retrieve=extend_schema(summary="Chi tiết giáo viên", responses={200: EduTeachersSerializer}),
 )
-class CaDayViewSet(viewsets.ModelViewSet):
-	queryset = CaDay.objects.all()
-	serializer_class = CaDaySerializer
-	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
-
-	def get_queryset(self):
-		queryset = super().get_queryset()
-		lop_raw = self.request.query_params.get("lop")
-		if lop_raw:
-			try:
-				lop_id = int(lop_raw)
-			except ValueError:
-				return queryset.none()
-			return queryset.filter(lop_id=lop_id)
-		return queryset
-
-
-@extend_schema_view(
-	list=extend_schema(summary="Danh sách giáo viên", responses={200: GiaoVienSerializer(many=True)}),
-	retrieve=extend_schema(summary="Chi tiết giáo viên", responses={200: GiaoVienSerializer}),
-	create=extend_schema(summary="tạo giáo viên", request=GiaoVienCreateSerializer, responses={201: GiaoVienSerializer}),
-	update=extend_schema(summary="cập nhật giáo viên", request=GiaoVienSerializer, responses={200: GiaoVienSerializer}),
-	partial_update=extend_schema(summary="cập nhật một phần giáo viên", request=GiaoVienSerializer, responses={200: GiaoVienSerializer}),
-	destroy=extend_schema(summary="xóa giáo viên", responses={204: None}),
-)
-class GiaoVienViewSet(viewsets.ModelViewSet):
-	queryset = GiaoVien.objects.all()
-	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
-
-	def get_serializer_class(self):
-		if self.action == "create":
-			return GiaoVienCreateSerializer
-		return GiaoVienSerializer
-
-	def destroy(self, request, *args, **kwargs):
-		instance = self.get_object()
-		instance.is_deleted = True
-		instance.save(update_fields=["is_deleted"])
-		return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-@extend_schema_view(
-	list=extend_schema(summary="Danh sách lịch dạy", responses={200: LichDaySerializer(many=True)}),
-	retrieve=extend_schema(summary="Chi tiết lịch dạy", responses={200: LichDaySerializer}),
-	create=extend_schema(summary="tạo lịch dạy", request=LichDaySerializer, responses={201: LichDaySerializer}),
-	update=extend_schema(summary="cập nhật lịch dạy", request=LichDaySerializer, responses={200: LichDaySerializer}),
-	partial_update=extend_schema(summary="cập nhật một phần lịch dạy", request=LichDaySerializer, responses={200: LichDaySerializer}),
-	destroy=extend_schema(summary="xóa lịch dạy", responses={204: None}),
-)
-class LichDayViewSet(viewsets.ModelViewSet):
-	queryset = LichDay.objects.all()
-	serializer_class = LichDaySerializer
+class EduTeachersViewSet(viewsets.ModelViewSet):
+	queryset = EduTeachers.objects.all()
+	serializer_class = EduTeachersSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
 
 
 @extend_schema_view(
-	list=extend_schema(summary="Danh sách ngày làm việc", responses={200: NgayLamViecSerializer(many=True)}),
-	retrieve=extend_schema(summary="Chi tiết ngày làm việc", responses={200: NgayLamViecSerializer}),
-	create=extend_schema(summary="tạo ngày làm việc", request=NgayLamViecSerializer, responses={201: NgayLamViecSerializer}),
-	update=extend_schema(summary="cập nhật ngày làm việc", request=NgayLamViecSerializer, responses={200: NgayLamViecSerializer}),
-	partial_update=extend_schema(summary="cập nhật một phần ngày làm việc", request=NgayLamViecSerializer, responses={200: NgayLamViecSerializer}),
-	destroy=extend_schema(summary="xóa ngày làm việc", responses={204: None}),
+	list=extend_schema(summary="Danh sách cấu hình lớp", responses={200: EduClassConfigsSerializer(many=True)}),
+	retrieve=extend_schema(summary="Chi tiết cấu hình lớp", responses={200: EduClassConfigsSerializer}),
 )
-class NgayLamViecViewSet(viewsets.ModelViewSet):
-	queryset = NgayLamViec.objects.all()
-	serializer_class = NgayLamViecSerializer
+class EduClassConfigsViewSet(viewsets.ModelViewSet):
+	queryset = EduClassConfigs.objects.all()
+	serializer_class = EduClassConfigsSerializer
+	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
+
+
+@extend_schema_view(
+	list=extend_schema(summary="Danh sách người dùng", responses={200: UsersSerializer(many=True)}),
+	retrieve=extend_schema(summary="Chi tiết người dùng", responses={200: UsersSerializer}),
+)
+class UsersViewSet(viewsets.ModelViewSet):
+	queryset = Users.objects.all()
+	serializer_class = UsersSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
