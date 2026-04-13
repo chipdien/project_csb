@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: teacher-service-backend
+    env_file:
+      - .env
+    environment:
+      DJANGO_SETTINGS_MODULE: core.settings
+      LOCAL_AUTHZ_DB_PATH: /data/teacher_service_authz.sqlite3
+    volumes:
+      - teacher_service_authz_data:/data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: teacher-service-frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+volumes:
+  teacher_service_authz_data:

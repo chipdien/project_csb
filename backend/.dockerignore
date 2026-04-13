@@ -1,0 +1,13 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+*.sqlite3
+*.sqlite3-journal
+.env
+.env.*
+schema.yaml

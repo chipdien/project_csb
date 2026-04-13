@@ -2,24 +2,26 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import (
-    CaDayViewSet,
-    CoSoDaoTaoViewSet,
-    GiaoVienViewSet,
-    LichDayViewSet,
-    LopViewSet,
-    NgayLamViecViewSet,
-    ScheduleByCoSoView,
+    CentersViewSet,
+    EduClassConfigsViewSet,
+    EduClassesViewSet,
+    EduCoursesViewSet,
+    EduDomainsViewSet,
+    EduSessionsViewSet,
+    EduTeachersViewSet,
+    UsersViewSet,
 )
 
 router = DefaultRouter()
-router.register("co-so-dao-tao", CoSoDaoTaoViewSet)
-router.register("lop", LopViewSet)
-router.register("ca-day", CaDayViewSet)
-router.register("giao-vien", GiaoVienViewSet)
-router.register("lich-day", LichDayViewSet)
-router.register("ngay-lam-viec", NgayLamViecViewSet)
+router.register("centers", CentersViewSet)
+router.register("edu-classes", EduClassesViewSet)
+router.register("edu-courses", EduCoursesViewSet)
+router.register("edu-domains", EduDomainsViewSet)
+router.register("edu-sessions", EduSessionsViewSet)
+router.register("edu-teachers", EduTeachersViewSet)
+router.register("edu-class-configs", EduClassConfigsViewSet)
+router.register("users", UsersViewSet)
 
 urlpatterns = [
-    path("schedule/", ScheduleByCoSoView.as_view(), name="schedule-by-co-so"),
     path("", include(router.urls)),
 ]

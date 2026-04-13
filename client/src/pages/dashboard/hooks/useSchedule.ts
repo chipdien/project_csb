@@ -1,39 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { scheduleService } from '@/services/schedule.service';
 
-export const useSchedule = (co_so_dao_tao: number, start_date: string, end_date: string) => {
+export const useSchedule = (coSoDaoTao: number, startDate: string, endDate: string) => {
   const [scheduleData, setScheduleData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefetching, setIsRefetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchSchedule = useCallback(async () => {
+    try {
+      setError(null);
+      setIsRefetching(true);
+      const data = await scheduleService.fetchSchedule(coSoDaoTao, startDate, endDate);
+      setScheduleData(data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+      setIsRefetching(false);
+    }
+  }, [coSoDaoTao, startDate, endDate]);
+
   useEffect(() => {
-    const fetchSchedule = async () => {
-      try {
-        setIsLoading(true);
-        const res = await fetch('/api/schedule/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            co_so_dao_tao,
-            start_date,
-            end_date
-          })
-        });
-        if (!res.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await res.json();
-        setScheduleData(data);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
+    setIsLoading(true);
     fetchSchedule();
-  }, [co_so_dao_tao, start_date, end_date]);
+  }, [fetchSchedule]);
 
-  return { scheduleData, isLoading, error };
+  return { scheduleData, isLoading, isRefetching, error, refetch: fetchSchedule };
 };

@@ -1,95 +1,61 @@
-from django.contrib.auth import get_user_model
-from django.db import transaction
 from rest_framework import serializers
 
-from .models import CaDay, CoSoDaoTao, GiaoVien, LichDay, Lop, NgayLamViec
+from apps.users.models import User
+from .models import (
+    Centers,
+    EduClassConfigs,
+    EduClasses,
+    EduCourses,
+    EduDomains,
+    EduSessions,
+    EduTeachers,
+)
 
-User = get_user_model()
 
-
-class CoSoDaoTaoSerializer(serializers.ModelSerializer):
+class CentersSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CoSoDaoTao
-        fields = ["id", "ten_co_so"]
+        model = Centers
+        fields = "__all__"
 
 
-class LopSerializer(serializers.ModelSerializer):
+class EduClassesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Lop
-        fields = [
-            "id",
-            "ma_lop",
-            "mon_hoc",
-            "ten_lop",
-            "khoi",
-            "ngay_bat_dau",
-            "ngay_ket_thuc",
-            "trang_thai",
-            "mo_ta",
-            "co_so_dao_tao",
-        ]
+        model = EduClasses
+        fields = "__all__"
 
 
-class CaDaySerializer(serializers.ModelSerializer):
+class EduCoursesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CaDay
-        fields = ["id", "lop", "ten_ca", "gio_bat_dau", "gio_ket_thuc"]
+        model = EduCourses
+        fields = "__all__"
 
 
-class GiaoVienSerializer(serializers.ModelSerializer):
+class EduDomainsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = GiaoVien
-        fields = ["id", "ho_ten", "user", "is_deleted"]
+        model = EduDomains
+        fields = "__all__"
 
 
-class GiaoVienUserCreateSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+class EduSessionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EduSessions
+        fields = "__all__"
 
+
+class EduTeachersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EduTeachers
+        fields = "__all__"
+
+
+class EduClassConfigsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EduClassConfigs
+        fields = "__all__"
+
+
+class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username", "email", "password", "phone_number"]
-
-
-class GiaoVienCreateSerializer(serializers.ModelSerializer):
-    user = GiaoVienUserCreateSerializer()
-
-    class Meta:
-        model = GiaoVien
-        fields = ["id", "ho_ten", "user", "is_deleted"]
-        read_only_fields = ["is_deleted"]
-
-    @transaction.atomic
-    def create(self, validated_data):
-        user_data = validated_data.pop("user")
-        password = user_data.pop("password")
-        user = User(**user_data)
-        user.set_password(password)
-        user.role = "teacher"
-        user.save()
-        giao_vien = GiaoVien.objects.create(user=user, **validated_data)
-        return giao_vien
-
-
-class LichDaySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LichDay
-        fields = ["id", "ngay_day", "giao_vien", "ca_day"]
-
-
-class NgayLamViecSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = NgayLamViec
-        fields = [
-            "id",
-            "giao_vien",
-            "ngay_co_the",
-            "gio_bat_dau",
-            "gio_ket_thuc",
-        ]
-
-
-class ScheduleRequestSerializer(serializers.Serializer):
-    co_so_dao_tao = serializers.IntegerField()
-    start_date = serializers.DateField()
-    end_date = serializers.DateField()
+        fields = "__all__"
 

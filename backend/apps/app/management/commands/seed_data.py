@@ -1,13 +1,10 @@
 from datetime import date, datetime, timedelta
 import random
 
-from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
 from apps.app.models import CaDay, CoSoDaoTao, GiaoVien, LichDay, Lop, NgayLamViec
-
-
-User = get_user_model()
+from apps.users.models import User
 
 
 class Command(BaseCommand):
@@ -58,7 +55,7 @@ class Command(BaseCommand):
 				username=username,
 				email=f"{username}@example.com",
 				password="password123",
-				role="teacher",
+				status="teacher",
 			)
 			teachers.append(
 				GiaoVien.objects.create(ho_ten=f"Giao vien {i + 1}", user=user)

@@ -127,3 +127,71 @@ export const generateTimeRuler = (start: number = 7, end: number = 21) => {
   }
   return ruler;
 };
+
+/**
+ * Lấy ra danh sách các ngày trong tuần bắt đầu từ một ngày cụ thể (startDate)
+ * Trả về mảng các đối tượng chứa thông tin ngày để render trên lịch
+ */
+export const getWeekDays = (startDateStr: string) => {
+  const start = new Date(startDateStr);
+  const result = [];
+  
+  const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const dayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+  
+  for (let i = 0; i < 7; i++) {
+    const currentDate = new Date(start);
+    currentDate.setDate(start.getDate() + i);
+    
+    // getDay() trả về 0 (CN), 1 (T2), ..., 6 (T7)
+    // Cần map sang index của mảng dayNames: 0 (T2), ..., 6 (CN)
+    const dayOfWeek = currentDate.getDay();
+    const normalizedDayIndex = (dayOfWeek + 6) % 7;
+    
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const year = currentDate.getFullYear();
+    
+    result.push({
+      name: dayNames[normalizedDayIndex],
+      key: dayKeys[normalizedDayIndex],
+      dateFormatted: `${day}/${month}`,
+      isoDate: `${year}-${month}-${day}`
+    });
+  }
+  
+  return result;
+};
+
+/**
+ * Format Date object to YYYY-MM-DD locally (ignoring timezone issues of toISOString)
+ */
+export const formatLocal = (dt: Date) => {
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth() + 1).padStart(2, '0');
+  const d = String(dt.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+};
+
+/**
+ * Lấy ra ngày Thứ 2 và Chủ Nhật của tuần chứa một ngày bất kỳ
+ */
+export const getWeekRange = (date: Date) => {
+  const d = new Date(date);
+  // getDay() trả về 0 (CN), 1 (T2), ..., 6 (T7)
+  const day = d.getDay();
+  
+  // Tính độ lệch ngày để lùi về Thứ 2
+  // Nếu là Chủ Nhật (0), cần lùi 6 ngày. Các ngày khác lùi (day - 1) ngày.
+  const diffToMonday = d.getDate() - day + (day === 0 ? -6 : 1);
+  const monday = new Date(d.setDate(diffToMonday));
+  
+  // Chủ Nhật = Thứ 2 + 6 ngày
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  
+  return { 
+    start: formatLocal(monday), 
+    end: formatLocal(sunday) 
+  };
+};
