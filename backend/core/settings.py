@@ -12,12 +12,45 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
+from datetime import timedelta
 
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR.parent / ".env")
+
+
+def env_bool(name: str, default: bool = False) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def env_list(name: str, default: list[str] | None = None) -> list[str]:
+    value = os.getenv(name)
+    if value is None:
+        return default or []
+    return [item.strip() for item in value.split(",") if item.strip()]
+
+
+def build_default_database() -> dict:
+    use_sqlite_default = env_bool("USE_SQLITE_DEFAULT", default=False)
+    db_name = os.getenv("DB_NAME", "")
+    if use_sqlite_default or not db_name:
+        return {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    return {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': db_name,
+        'USER': os.getenv('DB_USER', ''),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', ''),
+        'PORT': os.getenv('DB_PORT', '3306'),
+    }
 
 
 # Quick-start development settings - unsuitable for production
@@ -27,9 +60,9 @@ load_dotenv(BASE_DIR.parent / ".env")
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env_bool("DEBUG", default=True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 
 
 # Application definition
@@ -46,8 +79,6 @@ INSTALLED_APPS = [
     'apps.app',
     'apps.users',
 ]
-
-AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -83,15 +114,14 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME', ''),
-        'USER': os.getenv('DB_USER', ''),
-        'PASSWORD': os.getenv('DB_PASSWORD', ''),
-        'HOST': os.getenv('DB_HOST', ''),
-        'PORT': os.getenv('DB_PORT', '3306'),
-    }
+    'default': build_default_database(),
+    'local_authz': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.getenv('LOCAL_AUTHZ_DB_PATH', str(BASE_DIR / 'teacher_service_authz.sqlite3')),
+    },
 }
+
+DATABASE_ROUTERS = ['apps.users.db_router.UsersRouter']
 
 
 # Password validation
@@ -138,9 +168,26 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'apps.users.authentication.CompanyJWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Quan Ly Giang Vien API',
+    'DESCRIPTION': 'API tai lieu va xac thuc JWT.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
+NOCOBASE_SIGNIN_URL = os.getenv('NOCOBASE_SIGNIN_URL', 'https://v6.vietelite.edu.vn/api/auth:signIn')
+NOCOBASE_CHECK_URL = os.getenv('NOCOBASE_CHECK_URL', 'https://v6.vietelite.edu.vn/api/auth:check')
+NOCOBASE_AUTHENTICATOR = os.getenv('NOCOBASE_AUTHENTICATOR', '')
+NOCOBASE_TIMEOUT_SECONDS = int(os.getenv('NOCOBASE_TIMEOUT_SECONDS', '15'))
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }

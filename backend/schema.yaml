@@ -1,0 +1,2068 @@
+openapi: 3.0.3
+info:
+  title: Quan Ly Giang Vien API
+  version: 1.0.0
+  description: API tai lieu va xac thuc JWT.
+paths:
+  /api/admin/permissions/:
+    get:
+      operationId: admin_permissions_list
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permission'
+          description: ''
+    post:
+      operationId: admin_permissions_create
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Permission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Permission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Permission'
+        required: true
+      security:
+      - BearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+          description: ''
+  /api/admin/permissions/{id}/:
+    get:
+      operationId: admin_permissions_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this permission.
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+          description: ''
+    put:
+      operationId: admin_permissions_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this permission.
+        required: true
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Permission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Permission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Permission'
+        required: true
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+          description: ''
+    patch:
+      operationId: admin_permissions_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this permission.
+        required: true
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPermission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPermission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPermission'
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+          description: ''
+    delete:
+      operationId: admin_permissions_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this permission.
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/admin/roles/:
+    get:
+      operationId: admin_roles_list
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+          description: ''
+    post:
+      operationId: admin_roles_create
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Role'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Role'
+        required: true
+      security:
+      - BearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: ''
+  /api/admin/roles/{id}/:
+    get:
+      operationId: admin_roles_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this role.
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: ''
+    put:
+      operationId: admin_roles_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this role.
+        required: true
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Role'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Role'
+        required: true
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: ''
+    patch:
+      operationId: admin_roles_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this role.
+        required: true
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRole'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRole'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRole'
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: ''
+    delete:
+      operationId: admin_roles_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this role.
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/admin/user-roles/:
+    get:
+      operationId: admin_user_roles_list
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserRole'
+          description: ''
+    post:
+      operationId: admin_user_roles_create
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRole'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRole'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRole'
+        required: true
+      security:
+      - BearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRole'
+          description: ''
+  /api/admin/user-roles/{id}/:
+    get:
+      operationId: admin_user_roles_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user role.
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRole'
+          description: ''
+    put:
+      operationId: admin_user_roles_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user role.
+        required: true
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRole'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRole'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRole'
+        required: true
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRole'
+          description: ''
+    patch:
+      operationId: admin_user_roles_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user role.
+        required: true
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRole'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRole'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRole'
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRole'
+          description: ''
+    delete:
+      operationId: admin_user_roles_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user role.
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/admin/users/:
+    get:
+      operationId: admin_users_list
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+    post:
+      operationId: admin_users_create
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAdmin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserAdmin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserAdmin'
+        required: true
+      security:
+      - BearerAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAdmin'
+          description: ''
+  /api/admin/users/{id}/:
+    get:
+      operationId: admin_users_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: admin_users_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAdmin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserAdmin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserAdmin'
+        required: true
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAdmin'
+          description: ''
+    patch:
+      operationId: admin_users_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserAdmin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserAdmin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserAdmin'
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAdmin'
+          description: ''
+    delete:
+      operationId: admin_users_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - admin
+      security:
+      - BearerAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/auth/token/:
+    post:
+      operationId: auth_token_create
+      summary: Dang nhap va nhan JWT token
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainCompany'
+            examples:
+              LoginPayload:
+                value:
+                  username: admin
+                  password: '123456'
+                summary: Login payload
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainCompany'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainCompany'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefreshResponse'
+          description: ''
+  /api/auth/token/refresh/:
+    post:
+      operationId: auth_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/centers/:
+    get:
+      operationId: centers_list
+      summary: Danh sách trung tâm
+      tags:
+      - centers
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Centers'
+          description: ''
+  /api/centers/{id}/:
+    get:
+      operationId: centers_retrieve
+      summary: Chi tiết trung tâm
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this centers.
+        required: true
+      tags:
+      - centers
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Centers'
+          description: ''
+  /api/edu-class-configs/:
+    get:
+      operationId: edu_class_configs_list
+      summary: Danh sách cấu hình lớp
+      tags:
+      - edu-class-configs
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EduClassConfigs'
+          description: ''
+  /api/edu-class-configs/{id}/:
+    get:
+      operationId: edu_class_configs_retrieve
+      summary: Chi tiết cấu hình lớp
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this edu class configs.
+        required: true
+      tags:
+      - edu-class-configs
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EduClassConfigs'
+          description: ''
+  /api/edu-classes/:
+    get:
+      operationId: edu_classes_list
+      summary: Danh sách lớp
+      tags:
+      - edu-classes
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EduClasses'
+          description: ''
+  /api/edu-classes/{id}/:
+    get:
+      operationId: edu_classes_retrieve
+      summary: Chi tiết lớp
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this edu classes.
+        required: true
+      tags:
+      - edu-classes
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EduClasses'
+          description: ''
+  /api/edu-courses/:
+    get:
+      operationId: edu_courses_list
+      summary: Danh sách khóa học
+      tags:
+      - edu-courses
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EduCourses'
+          description: ''
+  /api/edu-courses/{id}/:
+    get:
+      operationId: edu_courses_retrieve
+      summary: Chi tiết khóa học
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this edu courses.
+        required: true
+      tags:
+      - edu-courses
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EduCourses'
+          description: ''
+  /api/edu-domains/:
+    get:
+      operationId: edu_domains_list
+      summary: Danh sách lĩnh vực
+      tags:
+      - edu-domains
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EduDomains'
+          description: ''
+  /api/edu-domains/{id}/:
+    get:
+      operationId: edu_domains_retrieve
+      summary: Chi tiết lĩnh vực
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this edu domains.
+        required: true
+      tags:
+      - edu-domains
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EduDomains'
+          description: ''
+  /api/edu-sessions/:
+    get:
+      operationId: edu_sessions_list
+      summary: Danh sách buổi học
+      parameters:
+      - in: query
+        name: center_id
+        schema:
+          type: integer
+        description: Loc theo center_id.
+      - in: query
+        name: end_date
+        schema:
+          type: string
+          format: date
+        description: Ngay ket thuc (YYYY-MM-DD).
+        required: true
+      - in: query
+        name: start_date
+        schema:
+          type: string
+          format: date
+        description: Ngay bat dau (YYYY-MM-DD).
+        required: true
+      tags:
+      - edu-sessions
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EduSessions'
+          description: ''
+  /api/edu-sessions/{id}/:
+    get:
+      operationId: edu_sessions_retrieve
+      summary: Chi tiết buổi học
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this edu sessions.
+        required: true
+      tags:
+      - edu-sessions
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EduSessions'
+          description: ''
+  /api/edu-teachers/:
+    get:
+      operationId: edu_teachers_list
+      summary: Danh sách giáo viên
+      tags:
+      - edu-teachers
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EduTeachers'
+          description: ''
+  /api/edu-teachers/{id}/:
+    get:
+      operationId: edu_teachers_retrieve
+      summary: Chi tiết giáo viên
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this edu teachers.
+        required: true
+      tags:
+      - edu-teachers
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EduTeachers'
+          description: ''
+  /api/users/:
+    get:
+      operationId: users_list
+      summary: Danh sách người dùng
+      tags:
+      - users
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Users'
+          description: ''
+  /api/users/{id}/:
+    get:
+      operationId: users_retrieve
+      summary: Chi tiết người dùng
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - users
+      security:
+      - BearerAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+          description: ''
+components:
+  schemas:
+    Centers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        code:
+          type: string
+          maxLength: 255
+        email:
+          type: string
+          maxLength: 255
+        phone:
+          type: string
+          maxLength: 255
+        bank_code:
+          type: string
+          maxLength: 255
+        bank_number:
+          type: string
+          maxLength: 255
+        bank_owner:
+          type: string
+          maxLength: 255
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_by_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        updated_by_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+        address:
+          type: string
+          maxLength: 255
+        contact_info:
+          nullable: true
+        bank_info:
+          nullable: true
+        synced_at:
+          type: string
+          format: date-time
+          nullable: true
+        center_director_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        center_manager_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        ver_sync:
+          type: string
+          nullable: true
+          maxLength: 255
+        bank_qr:
+          type: string
+          nullable: true
+          maxLength: 255
+        email_password:
+          type: string
+          nullable: true
+          maxLength: 255
+        email_server:
+          type: string
+          nullable: true
+          maxLength: 255
+        email_port:
+          type: number
+          format: double
+          nullable: true
+        email_template_group:
+          type: string
+          nullable: true
+          maxLength: 255
+        phone_tuyensinh:
+          type: string
+          nullable: true
+          maxLength: 255
+      required:
+      - address
+      - bank_code
+      - bank_number
+      - bank_owner
+      - code
+      - email
+      - id
+      - name
+      - phone
+    EduClassConfigs:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        class_id:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        teacher_id:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        from_field:
+          type: string
+          format: date-time
+        to:
+          type: string
+          format: date-time
+        room_id:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+          nullable: true
+        date:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        fav:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        fee:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        synced_at:
+          type: string
+          format: date-time
+          nullable: true
+        pic_admin:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        start_time:
+          type: string
+          format: time
+          nullable: true
+        end_time:
+          type: string
+          format: time
+          nullable: true
+        status:
+          type: string
+          nullable: true
+          maxLength: 255
+        note:
+          type: string
+          nullable: true
+      required:
+      - class_id
+      - date
+      - fav
+      - fee
+      - from_field
+      - id
+      - teacher_id
+      - to
+    EduClasses:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        code:
+          type: string
+          maxLength: 255
+        active:
+          type: string
+          nullable: true
+          maxLength: 255
+        open_date:
+          type: string
+          format: date
+        note:
+          type: string
+          nullable: true
+        fee:
+          type: number
+          format: double
+          nullable: true
+        cost:
+          type: number
+          format: double
+          nullable: true
+        center_id:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        course_id:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        year:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_by_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        updated_by_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        fee_per_hour:
+          type: number
+          format: double
+          nullable: true
+        synced_at:
+          type: string
+          format: date-time
+          nullable: true
+        cost_teacher:
+          type: number
+          format: double
+          nullable: true
+        pic_admin:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        pic_assistant:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        ver_sync:
+          type: string
+          nullable: true
+          maxLength: 255
+        friendly_class_schedule:
+          type: string
+          nullable: true
+          maxLength: 255
+        friendly_class_teachers:
+          type: string
+          nullable: true
+          maxLength: 255
+      required:
+      - center_id
+      - code
+      - course_id
+      - id
+      - name
+      - open_date
+      - year
+    EduCourses:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        grade:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        domain_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        center_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        showable:
+          type: string
+          nullable: true
+          maxLength: 255
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_by_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        updated_by_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        synced_at:
+          type: string
+          format: date-time
+          nullable: true
+        ver_sync:
+          type: string
+          nullable: true
+          maxLength: 255
+        level:
+          type: string
+          nullable: true
+          maxLength: 255
+      required:
+      - grade
+      - id
+      - name
+    EduDomains:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        slug:
+          type: string
+          maxLength: 255
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_by_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        updated_by_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        synced_at:
+          type: string
+          format: date-time
+          nullable: true
+        ver_sync:
+          type: string
+          nullable: true
+          maxLength: 255
+      required:
+      - id
+      - name
+      - slug
+    EduSessions:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        class_id:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        center_id:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        room_id:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+          nullable: true
+        from_field:
+          type: string
+          format: date-time
+        to:
+          type: string
+          format: date-time
+        date:
+          type: string
+          format: date
+        type:
+          type: string
+          nullable: true
+          maxLength: 255
+        status:
+          type: string
+          nullable: true
+          maxLength: 255
+        content:
+          type: string
+          nullable: true
+        content_files:
+          type: string
+          nullable: true
+        exercice:
+          type: string
+          nullable: true
+        exercice_files:
+          type: string
+          nullable: true
+        note:
+          type: string
+          nullable: true
+        ss_number:
+          type: number
+          format: double
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        teacher_id:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+        fee:
+          type: number
+          format: double
+          nullable: true
+        cost:
+          type: number
+          format: double
+          nullable: true
+        duration:
+          type: number
+          format: double
+          nullable: true
+        synced_at:
+          type: string
+          format: date-time
+          nullable: true
+        teacher_in:
+          type: string
+          format: time
+          nullable: true
+        student_present:
+          type: number
+          format: double
+          nullable: true
+        teacher_out:
+          type: string
+          format: time
+          nullable: true
+        created_by_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        updated_by_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        sort:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        session_income:
+          type: number
+          format: double
+          nullable: true
+        session_revenue:
+          type: number
+          format: double
+          nullable: true
+        session_revenue_net:
+          type: number
+          format: double
+          nullable: true
+        session_discout:
+          type: number
+          format: double
+          nullable: true
+        session_income_tmp:
+          type: number
+          format: double
+          nullable: true
+        base_student_fee:
+          type: number
+          format: double
+          nullable: true
+        student_present_man:
+          type: number
+          format: double
+          nullable: true
+        pic_admin:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        ver_sync:
+          type: string
+          nullable: true
+          maxLength: 255
+        info_session1:
+          type: string
+          nullable: true
+        session_comment:
+          type: string
+          nullable: true
+        comment_files:
+          type: string
+          nullable: true
+        session_type:
+          type: string
+          nullable: true
+          maxLength: 255
+      required:
+      - center_id
+      - class_id
+      - date
+      - from_field
+      - id
+      - teacher_id
+      - to
+    EduTeachers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        email:
+          type: string
+          nullable: true
+          maxLength: 255
+        phone:
+          type: string
+          nullable: true
+          maxLength: 255
+        school:
+          type: string
+          nullable: true
+          maxLength: 255
+        avatar:
+          type: string
+          nullable: true
+          maxLength: 255
+        ref_code:
+          type: string
+          nullable: true
+          maxLength: 255
+        password:
+          type: string
+          nullable: true
+          maxLength: 255
+        domain:
+          type: string
+          nullable: true
+          maxLength: 255
+        note:
+          type: string
+          nullable: true
+          maxLength: 255
+        device_token:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        gender:
+          type: string
+          nullable: true
+          maxLength: 255
+        otp:
+          type: string
+          nullable: true
+          maxLength: 255
+        sent_otp_at:
+          type: string
+          format: date-time
+          nullable: true
+        synced_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_by_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        updated_by_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        schoolyears:
+          nullable: true
+        dob:
+          type: string
+          format: date
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        vnid_number:
+          type: string
+          nullable: true
+          maxLength: 255
+        vnid_date:
+          type: string
+          format: date
+          nullable: true
+        vnid_validity_until:
+          type: string
+          format: date
+          nullable: true
+        vnid_issued_by:
+          type: string
+          nullable: true
+          maxLength: 255
+        address_alt:
+          type: string
+          nullable: true
+        display_name:
+          type: string
+          nullable: true
+          maxLength: 255
+      required:
+      - id
+      - name
+    PatchedPermission:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          maxLength: 100
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedRole:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          maxLength: 100
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedUserAdmin:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          maxLength: 255
+        nickname:
+          type: string
+          nullable: true
+          maxLength: 255
+        email:
+          type: string
+          nullable: true
+          maxLength: 255
+        phone:
+          type: string
+          nullable: true
+          maxLength: 255
+        password:
+          type: string
+          writeOnly: true
+        status:
+          type: string
+          nullable: true
+          maxLength: 255
+    PatchedUserRole:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user:
+          type: integer
+        role:
+          type: integer
+        created_by:
+          type: integer
+          nullable: true
+    Permission:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          maxLength: 100
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - created_at
+      - id
+      - name
+      - updated_at
+    Role:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          maxLength: 100
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - created_at
+      - id
+      - name
+      - updated_at
+    TokenObtainCompany:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - password
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    TokenRefreshResponse:
+      type: object
+      properties:
+        refresh:
+          type: string
+        access:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+      required:
+      - access
+      - refresh
+      - user
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          maxLength: 255
+        nickname:
+          type: string
+          nullable: true
+          maxLength: 255
+        email:
+          type: string
+          nullable: true
+          maxLength: 255
+        phone:
+          type: string
+          nullable: true
+          maxLength: 255
+        status:
+          type: string
+          nullable: true
+          maxLength: 255
+      required:
+      - id
+      - username
+    UserAdmin:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          maxLength: 255
+        nickname:
+          type: string
+          nullable: true
+          maxLength: 255
+        email:
+          type: string
+          nullable: true
+          maxLength: 255
+        phone:
+          type: string
+          nullable: true
+          maxLength: 255
+        password:
+          type: string
+          writeOnly: true
+        status:
+          type: string
+          nullable: true
+          maxLength: 255
+      required:
+      - id
+      - username
+    UserRole:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user:
+          type: integer
+        role:
+          type: integer
+        created_by:
+          type: integer
+          nullable: true
+      required:
+      - created_at
+      - id
+      - role
+      - user
+    Users:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        nickname:
+          type: string
+          nullable: true
+          maxLength: 255
+        username:
+          type: string
+          maxLength: 255
+        email:
+          type: string
+          nullable: true
+          maxLength: 255
+        phone:
+          type: string
+          nullable: true
+          maxLength: 255
+        password:
+          type: string
+          nullable: true
+          maxLength: 255
+        password_change_tz:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        app_lang:
+          type: string
+          nullable: true
+          maxLength: 255
+        reset_token:
+          type: string
+          nullable: true
+          maxLength: 255
+        system_settings:
+          nullable: true
+        sort:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        created_by_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        updated_by_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        teacher_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        status:
+          type: string
+          nullable: true
+          maxLength: 255
+        opt_school_year:
+          type: string
+          nullable: true
+          maxLength: 255
+        level_rank:
+          type: number
+          format: double
+          nullable: true
+        login_token:
+          type: string
+          nullable: true
+          maxLength: 255
+        login_token_expires_at:
+          type: string
+          format: date-time
+          nullable: true
+        portal_password:
+          type: string
+          nullable: true
+          maxLength: 255
+        opt_class_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        opt_student_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        main_department_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+      required:
+      - id
+      - username
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

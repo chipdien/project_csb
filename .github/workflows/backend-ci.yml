@@ -1,0 +1,48 @@
+name: Backend CI
+
+on:
+  push:
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-ci.yml"
+  pull_request:
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-ci.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      DJANGO_SECRET_KEY: ci-secret-key
+      USE_SQLITE_DEFAULT: "1"
+      NOCOBASE_SIGNIN_URL: "https://example.invalid/api/auth:signIn"
+      NOCOBASE_CHECK_URL: "https://example.invalid/api/auth:check"
+      NOCOBASE_TIMEOUT_SECONDS: "5"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Django checks
+        run: python manage.py check
+
+      - name: Migrate local authorization database
+        run: python manage.py migrate --database local_authz --noinput
+
+      - name: Run tests
+        run: python manage.py test apps.app apps.users

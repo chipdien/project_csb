@@ -1,3 +1,10 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import LocalPermission, LocalRole, LocalRolePermission, LocalUserRole, ServiceUser, User
+
+admin.site.register(User)
+admin.site.register(ServiceUser)
+admin.site.register(LocalRole)
+admin.site.register(LocalPermission)
+admin.site.register(LocalUserRole)
+admin.site.register(LocalRolePermission)

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from apps.users.models import User
 from .models import (
     Centers,
     EduClassConfigs,
@@ -8,7 +9,6 @@ from .models import (
     EduDomains,
     EduSessions,
     EduTeachers,
-    Users,
 )
 
 
@@ -56,6 +56,6 @@ class EduClassConfigsSerializer(serializers.ModelSerializer):
 
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Users
+        model = User
         fields = "__all__"
 

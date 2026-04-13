@@ -216,33 +216,3 @@ class EduClassConfigs(models.Model):
         db_table = 'edu_class_configs'
 
 
-class Users(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    updated_at = models.DateTimeField(blank=True, null=True)
-    nickname = models.CharField(max_length=255, blank=True, null=True)
-    username = models.CharField(unique=True, max_length=255, blank=True, null=True)
-    email = models.CharField(unique=True, max_length=255, blank=True, null=True)
-    phone = models.CharField(unique=True, max_length=255, blank=True, null=True)
-    password = models.CharField(max_length=255, blank=True, null=True)
-    password_change_tz = models.BigIntegerField(blank=True, null=True)
-    app_lang = models.CharField(max_length=255, blank=True, null=True)
-    reset_token = models.CharField(unique=True, max_length=255, blank=True, null=True)
-    system_settings = models.JSONField(blank=True, null=True)
-    sort = models.BigIntegerField(blank=True, null=True)
-    created_by_id = models.BigIntegerField(blank=True, null=True)
-    updated_by_id = models.BigIntegerField(blank=True, null=True)
-    teacher_id = models.BigIntegerField(blank=True, null=True)
-    status = models.CharField(max_length=255, blank=True, null=True)
-    opt_school_year = models.CharField(max_length=255, blank=True, null=True)
-    level_rank = models.FloatField(blank=True, null=True)
-    login_token = models.CharField(unique=True, max_length=255, blank=True, null=True)
-    login_token_expires_at = models.DateTimeField(blank=True, null=True)
-    portal_password = models.CharField(max_length=255, blank=True, null=True)
-    opt_class_id = models.BigIntegerField(blank=True, null=True)
-    opt_student_id = models.BigIntegerField(blank=True, null=True)
-    main_department_id = models.BigIntegerField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'users'

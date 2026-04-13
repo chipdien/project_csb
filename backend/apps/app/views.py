@@ -4,6 +4,7 @@ from drf_spectacular.utils import OpenApiParameter, OpenApiTypes, extend_schema,
 from rest_framework import permissions, viewsets
 from rest_framework.exceptions import ValidationError
 
+from apps.users.models import User
 from .models import (
 	Centers,
 	EduClassConfigs,
@@ -12,7 +13,6 @@ from .models import (
 	EduDomains,
 	EduSessions,
 	EduTeachers,
-	Users,
 )
 from .serializers import (
 	CentersSerializer,
@@ -35,6 +35,7 @@ class CentersViewSet(viewsets.ModelViewSet):
 	queryset = Centers.objects.all()
 	serializer_class = CentersSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
+	http_method_names = ["get", "head", "options"]
 
 
 @extend_schema_view(
@@ -45,6 +46,7 @@ class EduClassesViewSet(viewsets.ModelViewSet):
 	queryset = EduClasses.objects.all()
 	serializer_class = EduClassesSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
+	http_method_names = ["get", "head", "options"]
 
 
 @extend_schema_view(
@@ -55,6 +57,7 @@ class EduCoursesViewSet(viewsets.ModelViewSet):
 	queryset = EduCourses.objects.all()
 	serializer_class = EduCoursesSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
+	http_method_names = ["get", "head", "options"]
 
 
 @extend_schema_view(
@@ -65,6 +68,7 @@ class EduDomainsViewSet(viewsets.ModelViewSet):
 	queryset = EduDomains.objects.all()
 	serializer_class = EduDomainsSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
+	http_method_names = ["get", "head", "options"]
 
 
 @extend_schema_view(
@@ -101,6 +105,7 @@ class EduSessionsViewSet(viewsets.ModelViewSet):
 	queryset = EduSessions.objects.all()
 	serializer_class = EduSessionsSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
+	http_method_names = ["get", "head", "options"]
 
 	def get_queryset(self):
 		queryset = super().get_queryset()
@@ -138,6 +143,7 @@ class EduTeachersViewSet(viewsets.ModelViewSet):
 	queryset = EduTeachers.objects.all()
 	serializer_class = EduTeachersSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
+	http_method_names = ["get", "head", "options"]
 
 
 @extend_schema_view(
@@ -148,6 +154,7 @@ class EduClassConfigsViewSet(viewsets.ModelViewSet):
 	queryset = EduClassConfigs.objects.all()
 	serializer_class = EduClassConfigsSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
+	http_method_names = ["get", "head", "options"]
 
 
 @extend_schema_view(
@@ -155,6 +162,7 @@ class EduClassConfigsViewSet(viewsets.ModelViewSet):
 	retrieve=extend_schema(summary="Chi tiết người dùng", responses={200: UsersSerializer}),
 )
 class UsersViewSet(viewsets.ModelViewSet):
-	queryset = Users.objects.all()
+	queryset = User.objects.all()
 	serializer_class = UsersSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrStaffWrite]
+	http_method_names = ["get", "head", "options"]
