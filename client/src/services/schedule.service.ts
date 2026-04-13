@@ -7,6 +7,13 @@ export interface CreateSessionData {
   ngay_day: string;
 }
 
+export interface CreateShiftData {
+  lop: number;
+  ten_ca: string;
+  gio_bat_dau: string;
+  gio_ket_thuc: string;
+}
+
 const getAuthHeaders = () => {
   const token = authService.getToken();
   return token ? { 'Authorization': `Bearer ${token}` } : {};
@@ -66,6 +73,28 @@ export const scheduleService = {
     return res.json();
   },
 
+  createShift: async (data: CreateShiftData) => {
+    const res = await fetch(API_ENDPOINTS.SHIFTS, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      let errorMsg = 'Lỗi khi tạo ca dạy';
+      try {
+        const errData = await res.json();
+        errorMsg = errData.detail || (typeof errData === 'string' ? errData : JSON.stringify(errData));
+      } catch (e) {
+        errorMsg = await res.text();
+      }
+      throw new Error(errorMsg);
+    }
+    return res.json();
+  },
+
   createSession: async (data: CreateSessionData) => {
     const res = await fetch(API_ENDPOINTS.SESSIONS, {
       method: 'POST',
@@ -86,5 +115,38 @@ export const scheduleService = {
       throw new Error(errorMsg);
     }
     return res.json();
+  },
+
+  updateSession: async (id: number, data: CreateSessionData) => {
+    const res = await fetch(`${API_ENDPOINTS.SESSIONS}${id}/`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      let errorMsg = 'Lỗi khi cập nhật ca dạy';
+      try {
+        const errData = await res.json();
+        errorMsg = errData.detail || (typeof errData === 'string' ? errData : JSON.stringify(errData));
+      } catch (e) {
+        errorMsg = await res.text();
+      }
+      throw new Error(errorMsg);
+    }
+    return res.json();
+  },
+
+  deleteSession: async (id: number) => {
+    const res = await fetch(`${API_ENDPOINTS.SESSIONS}${id}/`, {
+      method: 'DELETE',
+      headers: { ...getAuthHeaders() }
+    });
+    if (!res.ok) {
+      throw new Error('Lỗi khi xóa ca dạy');
+    }
+    return true;
   }
 };

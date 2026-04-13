@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, Plus } from 'lucide-react';
 import ScheduleCard from './ScheduleCard';
 import AddSessionModal from './AddSessionModal';
 import { calculateTimelinePosition, detectConflicts, generateTimeRuler, getScheduleLayers, getWeekDays } from '@/utils/timeUtils';
@@ -23,7 +23,16 @@ const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ scheduleData, startDate
   const timeRuler = generateTimeRuler(TIMELINE_START, TIMELINE_END);
   const [selectedDayKey, setSelectedDayKey] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [targetCell, setTargetCell] = useState<{ khoi: string; isoDate: string; displayDate: string } | null>(null);
+  const [targetCell, setTargetCell] = useState<{ khoi: string; isoDate: string; displayDate: string; droppedTime?: { start: string, end: string } } | null>(null);
+  const [editingSession, setEditingSession] = useState<any>(null);
+  const [dragIndicatorPercent, setDragIndicatorPercent] = useState<number | null>(null);
+  const [dragOffsetX, setDragOffsetX] = useState<number>(0);
+  const [toastMessage, setToastMessage] = useState<{title: string, message: string, type: 'success' | 'error'} | null>(null);
+
+  const showToast = (title: string, message: string, type: 'success' | 'error' = 'success') => {
+    setToastMessage({ title, message, type });
+    setTimeout(() => setToastMessage(null), 4000);
+  };
 
   const toggleDay = (key: string) => {
     setSelectedDayKey(prev => prev === key ? null : key);
@@ -63,8 +72,91 @@ const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ scheduleData, startDate
     }
   };
 
+  const handleDrop = (e: React.DragEvent, targetIsoDate: string, targetKhoi: string, targetDisplayDate: string, isTimelineDrop: boolean = false) => {
+    e.preventDefault();
+    const sessionStr = e.dataTransfer.getData('application/json');
+    if (!sessionStr) return;
+    
+    try {
+      const session = JSON.parse(sessionStr);
+      let droppedTime: { start: string, end: string } | undefined = undefined;
+      
+      if (isTimelineDrop) {
+        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+        // Mouse coordinate relative to the timeline track LESS the pointer offset inside the card
+        const x = e.clientX - rect.left - dragOffsetX;
+        const percentage = Math.max(0, Math.min(1, x / rect.width));
+        
+        const totalMinutes = (TIMELINE_END - TIMELINE_START) * 60;
+        const startMinutes = TIMELINE_START * 60 + (percentage * totalMinutes);
+        
+        // Snap to nearest 15 minutes
+        const snappedStartMinutes = Math.round(startMinutes / 15) * 15;
+        
+        const sHours = Math.floor(snappedStartMinutes / 60);
+        const sMins = snappedStartMinutes % 60;
+        const startStr = `${String(sHours).padStart(2, '0')}:${String(sMins).padStart(2, '0')}`;
+        
+        // Use dragged duration or 90 mins
+        let durationMins = 90;
+        if (session.time && session.time.includes('-')) {
+          const [origStart, origEnd] = session.time.split(' - ');
+          if (origStart && origEnd) {
+            const [osH, osM] = origStart.split(':').map(Number);
+            const [oeH, oeM] = origEnd.split(':').map(Number);
+            const calculatedDuration = (oeH * 60 + oeM) - (osH * 60 + osM);
+            if (calculatedDuration > 0) durationMins = calculatedDuration;
+          }
+        }
+        
+        const endMinutes = snappedStartMinutes + durationMins;
+        const eHours = Math.floor(endMinutes / 60);
+        const eMins = endMinutes % 60;
+        const endStr = `${String(eHours).padStart(2, '0')}:${String(eMins).padStart(2, '0')}`;
+        
+        droppedTime = { start: startStr, end: endStr };
+      }
+
+      setEditingSession(session);
+      setTargetCell({ khoi: targetKhoi, isoDate: targetIsoDate, displayDate: targetDisplayDate, droppedTime });
+      setIsModalOpen(true);
+    } catch (err) {
+      console.error('Failed to parse dropped session data', err);
+    }
+  };
+
+
   return (
-    <div className="rounded-lg overflow-hidden shadow-sm border border-outline-variant/80 transition-all duration-500 ease-in-out">
+    <div className="rounded-lg overflow-hidden shadow-sm border border-outline-variant/80 transition-all duration-500 ease-in-out relative group/schedule">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className={`fixed bottom-6 right-6 z-[9999] p-4 rounded-xl shadow-2xl border flex items-center gap-3 animate-in slide-in-from-bottom-5 fade-in duration-300 min-w-[300px] ${toastMessage.type === 'success' ? 'bg-[#F2FDF5] border-[#BBF7D0] text-[#166534]' : 'bg-[#FEF2F2] border-[#FECACA] text-[#991B1B]'}`}>
+          <div className={`p-1.5 rounded-full text-white ${toastMessage.type === 'success' ? 'bg-[#22C55E]' : 'bg-[#EF4444]'}`}>
+            <AlertTriangle size={18} />
+          </div>
+          <div>
+            <h4 className="font-bold text-sm tracking-wide">{toastMessage.title}</h4>
+            <p className="text-xs font-medium opacity-80 mt-0.5">{toastMessage.message}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Global Drag Indicator */}
+      {isTimelineMode && dragIndicatorPercent !== null && (
+        <div 
+          className="absolute top-0 bottom-0 border-l-[2px] border-primary border-dashed z-[100] pointer-events-none transition-none shadow-[0_0_10px_rgba(var(--primary),0.3)]"
+          style={{ left: `calc(120px + (100% - 120px) * ${dragIndicatorPercent})` }}
+        >
+          <div className="absolute top-2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-lg whitespace-nowrap">
+            {(() => {
+              const m = TIMELINE_START * 60 + dragIndicatorPercent * ((TIMELINE_END - TIMELINE_START) * 60);
+              const r = Math.round(m / 15) * 15;
+              return `${String(Math.floor(r/60)).padStart(2,'0')}:${String(r%60).padStart(2,'0')}`;
+            })()}
+          </div>
+        </div>
+      )}
+
       {/* Grid Header */}
       <div className={`grid border-b border-outline-variant/80 bg-slate-50 transition-all duration-500 ${isTimelineMode ? 'grid-cols-[120px_1fr]' : 'grid-cols-[120px_repeat(7,1fr)]'
         }`}>
@@ -212,38 +304,91 @@ const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ scheduleData, startDate
                   return (
                     <div
                       key={day.key}
-                      className="p-2 space-y-2 border-l border-outline-variant/50 bg-white hover:bg-primary/5 cursor-pointer transition-colors overflow-y-auto relative"
-                      onClick={() => {
-                        setTargetCell({ khoi: gradeItem.khoi, isoDate: day.isoDate, displayDate: day.dateFormatted });
-                        setIsModalOpen(true);
-                      }}
+                      className="p-2 space-y-2 border-l border-outline-variant/50 bg-white hover:bg-primary/[0.02] transition-colors overflow-y-auto relative group"
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={(e) => handleDrop(e, day.isoDate, gradeItem.khoi, day.dateFormatted)}
                     >
                       {sessions.length > 0 ? (
-                        sessions.map((session: any, sIdx: number) => {
-                          const isConflict = dayConflictsMap[day.key]?.some((c: any) =>
-                            c.code === session.code && c.time === session.time && c.teacher_id === session.teacher_id
-                          );
-                          return (
-                            <ScheduleCard
-                              key={sIdx}
-                              code={session.code}
-                              time={session.time}
-                              room={session.room}
-                              isConflict={isConflict}
-                              variant={sIdx % 2 === 0 ? 'primary' : 'secondary'}
-                            />
-                          );
-                        })
+                        <>
+                          {sessions.map((session: any, sIdx: number) => {
+                            const isConflict = dayConflictsMap[day.key]?.some((c: any) =>
+                              c.code === session.code && c.time === session.time && c.teacher_id === session.teacher_id
+                            );
+                            return (
+                              <ScheduleCard
+                                key={sIdx}
+                                code={session.code}
+                                time={session.time}
+                                room={session.room}
+                                teacherName={session.teacher_name}
+                                subject={session.subject}
+                                classNameFull={session.class_name}
+                                isConflict={isConflict}
+                                variant={sIdx % 2 === 0 ? 'primary' : 'secondary'}
+                                draggable={true}
+                                onDragStart={(e) => {
+                                  e.dataTransfer.setData('application/json', JSON.stringify(session));
+                                  const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                                  setDragOffsetX(e.clientX - rect.left);
+                                }}
+                                onClick={() => {
+                                  setEditingSession(session);
+                                  setTargetCell({ khoi: gradeItem.khoi, isoDate: day.isoDate, displayDate: day.dateFormatted });
+                                  setIsModalOpen(true);
+                                }}
+                              />
+                            );
+                          })}
+                          {/* Ghost Card for existing sessions */}
+                          <div
+                            onClick={() => {
+                              setEditingSession(null);
+                              setTargetCell({ khoi: gradeItem.khoi, isoDate: day.isoDate, displayDate: day.dateFormatted });
+                              setIsModalOpen(true);
+                            }}
+                            className="hidden group-hover:flex items-center justify-center gap-2 px-2 py-3 rounded border-2 border-dashed border-primary/30 bg-primary/5 text-primary hover:bg-primary/10 hover:border-primary/50 transition-all cursor-pointer animate-in fade-in slide-in-from-top-1 duration-200"
+                          >
+                            <Plus size={14} strokeWidth={3} />
+                            <span className="text-[10px] font-bold uppercase tracking-wider">Thêm ca dạy</span>
+                          </div>
+                        </>
                       ) : (
-                        <div className="flex items-center justify-center h-full opacity-20 transform hover:opacity-40 transition-opacity">
-                          <span className="text-[8px] font-bold text-outline-variant uppercase">N/A</span>
+                        <div 
+                          className="relative h-full flex flex-col items-center justify-center min-h-[100px] cursor-pointer"
+                          onClick={() => {
+                            setEditingSession(null);
+                            setTargetCell({ khoi: gradeItem.khoi, isoDate: day.isoDate, displayDate: day.dateFormatted });
+                            setIsModalOpen(true);
+                          }}
+                        >
+                          <div className="flex items-center justify-center opacity-20">
+                            <span className="text-[8px] font-bold text-outline-variant uppercase tracking-widest">N/A</span>
+                          </div>
                         </div>
                       )}
                     </div>
                   );
                 })
               ) : (
-                <div className="relative w-full bg-white transition-all duration-500">
+                <div 
+                  className="relative w-full bg-white transition-all duration-500 min-h-[100px]"
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    if (isTimelineMode) {
+                      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                      const x = e.clientX - rect.left - dragOffsetX;
+                      setDragIndicatorPercent(Math.max(0, Math.min(1, x / rect.width)));
+                    }
+                  }}
+                  onDragLeave={() => setDragIndicatorPercent(null)}
+                  onDrop={(e) => {
+                    setDragIndicatorPercent(null);
+                    const targetedDay = days.find(d => d.key === selectedDayKey);
+                    if (targetedDay) {
+                      handleDrop(e, targetedDay.isoDate, gradeItem.khoi, targetedDay.dateFormatted, true);
+                    }
+                  }}
+                >
                   {/* Lưới nền cho timeline */}
                   <div className="absolute inset-0 pointer-events-none">
                     {Array.from({ length: TIMELINE_END - TIMELINE_START + 1 }).map((_, idx) => (
@@ -268,9 +413,22 @@ const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ scheduleData, startDate
                           time={session.time}
                           room={session.room}
                           teacherName={session.teacher_name}
+                          subject={session.subject}
+                          classNameFull={session.class_name}
                           isConflict={session.isConflict}
                           isTimelineMode={true}
                           variant={sIdx % 2 === 0 ? 'primary' : 'secondary'}
+                          draggable={true}
+                          onDragStart={(e) => {
+                            e.dataTransfer.setData('application/json', JSON.stringify(session));
+                            const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                            setDragOffsetX(e.clientX - rect.left);
+                          }}
+                          onClick={() => {
+                            setEditingSession(session);
+                            setTargetCell({ khoi: gradeItem.khoi, isoDate: selectedDayKey!, displayDate: days.find(d => d.key === selectedDayKey)?.dateFormatted || '' });
+                            setIsModalOpen(true);
+                          }}
                           style={{
                             left: pos.left,
                             width: pos.width,
@@ -292,13 +450,15 @@ const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ scheduleData, startDate
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         targetCell={targetCell}
+        editingSession={editingSession}
         onSuccess={() => {
           setIsModalOpen(false);
-          // Gọi refresh data nếu props cho phép thay vì reload cứng trang
+          showToast('Cập nhật thành công', 'Ca dạy đã được lưu hệ thống!', 'success');
+          // Gọi refresh data thay vì reload cứng trang
           if (onRefresh) {
             onRefresh();
           } else {
-            window.location.reload();
+            setTimeout(() => window.location.reload(), 1500);
           }
         }}
       />
