@@ -187,7 +187,7 @@ class EduDomainsViewSet(viewsets.ModelViewSet):
 				"data": data,
 			}
 		)
-
+)
 
 @extend_schema_view(
 	list=extend_schema(summary="Danh sách cơ sở đào tạo", responses={200: CoSoDaoTaoSerializer(many=True)}),
