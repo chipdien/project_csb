@@ -64,6 +64,10 @@ DEBUG = env_bool("DEBUG", default=True)
 
 ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 
+vercel_url = os.getenv("VERCEL_URL", "").strip()
+if vercel_url:
+    ALLOWED_HOSTS.append(vercel_url)
+
 
 # Application definition
 
@@ -198,3 +202,16 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
+
+cors_allowed_origins = env_list("CORS_ALLOWED_ORIGINS")
+if cors_allowed_origins:
+    CORS_ALLOWED_ORIGINS = cors_allowed_origins
+
+CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS")
+if vercel_url:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{vercel_url}")
+
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
