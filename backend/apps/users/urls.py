@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import LocalPermissionViewSet, LocalRoleViewSet, LocalUserRoleViewSet, UserViewSet
 
+# Undo test comment in urls.py.
 router = DefaultRouter()
 router.register("users", UserViewSet, basename="user")
 router.register("roles", LocalRoleViewSet, basename="local-role")

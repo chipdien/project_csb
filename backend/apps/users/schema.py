@@ -1,6 +1,7 @@
 from drf_spectacular.extensions import OpenApiAuthenticationExtension
 
 
+# Undo test comment in schema.py.
 class CompanyJWTAuthenticationScheme(OpenApiAuthenticationExtension):
 	target_class = "apps.users.authentication.CompanyJWTAuthentication"
 	name = "BearerAuth"

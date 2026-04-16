@@ -3,6 +3,7 @@ from rest_framework.permissions import BasePermission
 from .token_utils import get_token_values
 
 
+# Undo test comment in permissions.py.
 class IsNocoBaseAdminUser(BasePermission):
 	def has_permission(self, request, view):
 		user = request.user

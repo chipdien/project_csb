@@ -18,7 +18,6 @@ from .serializers import (
 )
 from .services import LocalAccessService, NocoBaseAuthService
 
-
 class CompanyTokenObtainPairView(APIView):
 	permission_classes = [permissions.AllowAny]
 
