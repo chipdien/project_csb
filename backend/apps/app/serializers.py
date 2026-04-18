@@ -37,9 +37,12 @@ class EduDomainsSerializer(serializers.ModelSerializer):
 
 
 class EduSessionsSerializer(serializers.ModelSerializer):
+    teacher_name = serializers.CharField(source="teacher.name", read_only=True)
+    class_code = serializers.CharField(source="edu_class.code", read_only=True)
+    class_name = serializers.CharField(source="edu_class.name", read_only=True)
     class Meta:
         model = EduSessions
-        fields = "__all__"
+        fields = "id", "teacher_id", "teacher_name", "class_id", "class_code", "class_name", "date", "from_field","to", "room_id"
 
 
 class EduTeachersSerializer(serializers.ModelSerializer):
@@ -58,4 +61,3 @@ class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = "__all__"
-
