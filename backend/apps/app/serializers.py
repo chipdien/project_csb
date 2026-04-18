@@ -37,12 +37,36 @@ class EduDomainsSerializer(serializers.ModelSerializer):
 
 
 class EduSessionsSerializer(serializers.ModelSerializer):
-    teacher_name = serializers.CharField(source="teacher.name", read_only=True)
-    class_code = serializers.CharField(source="edu_class.code", read_only=True)
-    class_name = serializers.CharField(source="edu_class.name", read_only=True)
+    teacher_name = serializers.SerializerMethodField(read_only=True)
+    class_code = serializers.SerializerMethodField(read_only=True)
+    class_name = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = EduSessions
-        fields = "id", "teacher_id", "teacher_name", "class_id", "class_code", "class_name", "date", "from_field","to", "room_id"
+        fields = (
+            "id",
+            "teacher_id",
+            "teacher_name",
+            "class_id",
+            "class_code",
+            "class_name",
+            "date",
+            "from_field",
+            "to",
+            "room_id",
+        )
+
+    def get_teacher_name(self, obj):
+        teacher = EduTeachers.objects.filter(id=obj.teacher_id).first()
+        return teacher.name if teacher else None
+
+    def get_class_code(self, obj):
+        class_config = EduClasses.objects.filter(id=obj.class_id).first()
+        return class_config.code if class_config else None
+
+    def get_class_name(self, obj):
+        class_config = EduClasses.objects.filter(id=obj.class_id).first()
+        return class_config.name if class_config else None
 
 
 class EduTeachersSerializer(serializers.ModelSerializer):
